@@ -10,30 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Verbs {
-  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  verb        String
-  type        String
-  level       String
-  regularType String
-  eng         String
-  exp         String
-  users       VerbsOnUsers[]
-}
-
 model Users {
-  uid   String         @id
-  email String         @unique
-  verbs VerbsOnUsers[]
+  uid   String @id @default(cuid())
+  email String @unique
 }
 
-model VerbsOnUsers {
-  verb       Verbs    @relation(fields: [verbId], references: [id])
-  verbId     String   @db.Uuid
-  user       Users    @relation(fields: [userId], references: [uid])
-  userId     String
-  assignedAt DateTime @default(now())
-  assignedBy String
-
-  @@id([verbId, userId])
+model DailyStocks {
+  id     BigInt   @id @default(autoincrement())
+  date   DateTime @unique @db.Date
+  stocks String   @unique
 }
