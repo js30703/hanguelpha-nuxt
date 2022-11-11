@@ -1,7 +1,7 @@
 import {H3Event} from 'h3'
 import prisma from '@/server/_prisma'
 import axios from 'axios'
-import dayjs from '@/utils/dayjs';
+import dayjs from 'dayjs'
 import { Prisma } from '@prisma/client';
 
 interface StockDaily {
@@ -47,9 +47,8 @@ async function fetchRisingStockList(){
 }
 
 export default defineEventHandler(async (event:H3Event) => {
-  const TODAY = dayjs().tz('Asia/Seoul').format('YYYY-MM-DDT00:00:00.000Z')
-  const hourNow = dayjs().tz('Asia/Seoul').hour() * 100 + dayjs().tz('Asia/Seoul').minute()
-  
+  const TODAY = dayjs().format('YYYY-MM-DDT00:00:00.000Z')
+  const hourNow = dayjs().hour() * 100 + dayjs().minute()
   const stocks = await fetchRisingStockList()
 
   if(hourNow > 1530){
@@ -61,6 +60,7 @@ export default defineEventHandler(async (event:H3Event) => {
   }
 
   return {
+    tz_now: dayjs().format(),
     date: TODAY,
     total: stocks.length,
     stocks: stocks
