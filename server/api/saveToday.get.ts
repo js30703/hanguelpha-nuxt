@@ -44,18 +44,19 @@ export default defineEventHandler(async (event:H3Event) => {
   const hourNow = dayjs().hour() * 100 + dayjs().minute()
   const stocks = await fetchRisingStockList()
 
-  if(hourNow < 1530){ return }
+  if(hourNow < 1530){ 
 
     await prisma.dailyStocks.upsert({
       where:{stocks:JSON.stringify(stocks) },
       update:{},
       create:{date:TODAY , stocks:JSON.stringify(stocks)} as Prisma.DailyStocksCreateInput
     })
+  }
 
 
   return {
     tz_now: dayjs().format(),
-    tz:process.env.TZ,
+    process:process.env.TZ,
     date: TODAY,
     total: stocks.length,
     stocks: stocks
