@@ -92,7 +92,8 @@ export default defineEventHandler(async (event:H3Event) => {
         ...annualFinance,
       }
     }).sort((a,b)=>{return b.ratioTradingMarketCap - a.ratioTradingMarketCap})
-    // db에 저장
+    // db에 저장?
+    
     return {
       date:dayjs().format(),
       length:data.length,
