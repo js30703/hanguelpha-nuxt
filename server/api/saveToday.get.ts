@@ -1,16 +1,9 @@
 import {H3Event} from 'h3'
-import prisma from '@/server/_prisma'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import { Prisma } from '@prisma/client';
+import prisma, { StockDaily } from '@/server/_prisma';
 
-interface StockDaily {
-  name: string;
-  code: string;
-  close: string;
-  ratio: number;
-  tradingValue:string;
-}
 
 async function mergeKospiKosdaq (_stocks: any[]) {
   return _stocks
@@ -51,16 +44,18 @@ export default defineEventHandler(async (event:H3Event) => {
   const hourNow = dayjs().hour() * 100 + dayjs().minute()
   const stocks = await fetchRisingStockList()
 
-  if(hourNow > 1530){
+  if(hourNow < 1530){ return }
+
     await prisma.dailyStocks.upsert({
       where:{stocks:JSON.stringify(stocks) },
       update:{},
       create:{date:TODAY , stocks:JSON.stringify(stocks)} as Prisma.DailyStocksCreateInput
     })
-  }
+
 
   return {
     tz_now: dayjs().format(),
+    tz:process.env.TZ,
     date: TODAY,
     total: stocks.length,
     stocks: stocks
