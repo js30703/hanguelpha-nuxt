@@ -6,7 +6,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "studio": "npx prisma studio"
+    "studio": "npx prisma studio",
+    "migrate": "npx prisma migrate dev"
   },
   "devDependencies": {
     "nuxt": "3.0.0-rc.12"
