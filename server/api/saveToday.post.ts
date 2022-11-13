@@ -66,7 +66,7 @@ export default defineEventHandler(async (event:H3Event) => {
     
     return {
       ...item,
-      // summary:response[1].data.corporationSummary,
+      summary:response[1].data.corporationSummary,
       closeToday:closePrice,
       ratioTradingMarketCap:ratioTradingMarketCap,
       ...totalInfos,
