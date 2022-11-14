@@ -1,0 +1,26 @@
+@import './variables.scss';
+@import './mixins.scss';
+
+.center{
+    display: flex;
+    // flex-direction : colum,row,colum-revers
+    justify-content: center; // flex-start, flex-end, center 주축
+    align-items: center; // flex-start, flex-end, center 보조축
+}
+.v-stack{
+    @extend .center;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.h-stack{
+    @extend .center;
+    flex-direction: row;
+}
+
+.row {
+    @extend .center;
+    width: 100vw;
+    height: auto;
+}

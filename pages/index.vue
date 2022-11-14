@@ -1,32 +1,45 @@
 <script lang="ts" setup>
-// import axios from "axios";
-
-/*
-TODO
-1. 타자연습앱
-2. 종이로 인쇄해서 연습 할 수 있는 무언가
-3. 멋진 랜딩페이지
-4. 회원가입
-5. 로그인
-6. 인증 페이지
-7. 로그아웃
-8. 회원정보 수정
-9. 회원탈퇴
-10. 회원정보 보기
-*/
-// const { data: count } = await axios.get("http://localhost:3000/api/hello");
+import { fetchRank } from "@/axiosCS";
+const { date, ranks } = await fetchRank();
+const _date = new Date(date);
+const date_kor = `${_date.getFullYear()}년 ${
+  _date.getMonth() + 1
+}월 ${_date.getDate()}일`;
 </script>
 
 <template>
   <div class="main">
-    <div class="main-ctn">
-      <input type="text" />
-    </div>
+    <section class="main-ctn">
+      <h1>10거래일 간 한국 급등주 목록</h1>
+      <h2 class="date">날짜 : {{ date_kor }}</h2>
+      <!--  "name", "code", "tradingValue", "detail", "summary", "closeToday", "ratioTradingMarketCap", "marketValue", "eps", "bps", "매출액", "영업이익", "당좌비율" ] -->
+      <div class="rankCard" :key="rank.name" v-for="rank in ranks">
+        <div class="rankCard__name">{{ rank.name }}</div>
+        <div class="rankCard__price">{{ rank.closeToday }}</div>
+      </div>
+    </section>
   </div>
 </template>
 
 <style lang="scss" scoped>
-input {
-  border: 1px solid red;
+@import "@/assets/scss/_base.scss";
+.main {
+  @extend .center;
+  background: white;
+  &-ctn {
+    @extend .v-stack;
+    width: 95vw;
+    margin: 20px;
+    .rankCard {
+      @extend .h-stack;
+      @extend .center;
+      margin: 20px;
+      width: 100%;
+      height: 100%;
+      border: 1px solid black;
+      border-radius: 10px;
+      padding: 10px;
+    }
+  }
 }
 </style>

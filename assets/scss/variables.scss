@@ -1,0 +1,46 @@
+
+// Small tablets and large smartphones (landscape view)
+$screen-0: 0px;
+
+// Small tablets and large smartphones (landscape view)
+$screen-sm-min: 576px;
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Tablets and small desktops
+$screen-lg-min: 992px;
+
+// Large tablets and desktops
+$screen-xl-min: 1200px;
+
+$break-points:  $screen-0,$screen-md-min,$screen-lg-min;
+
+$primary: #0064ff;
+// templates
+// https://github.com/KittyGiraudel/sass-boilerplate
+// https://github.com/topics/scss-template
+$shadow-md: 0 2px 1px -1px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+
+$filter-white:invert(99%) sepia(5%) saturate(788%) hue-rotate(193deg)
+brightness(120%) contrast(100%);
+
+@font-face {
+    font-family: "Pretendard-Regular";
+    src: url('assets/fonts/Pretendard-Regular.woff2') format('woff2'),
+        url('assets/fonts/Pretendard-Regular.woff') format('woff'),
+        url('assets/fonts/Pretendard-Regular.ttf') format('ttf')
+}
+@font-face {
+    font-family: "Pretendard-Light";
+    src: url('assets/fonts/Pretendard-Light.woff2') format('woff2'),
+        url('assets/fonts/Pretendard-Light.woff') format('woff'),
+        url('assets/fonts/Pretendard-Light.ttf') format('ttf')
+}
+@font-face {
+    font-family: "Pretendard-Bold";
+    src: url('assets/fonts/Pretendard-Bold.woff2') format('woff2'),
+        url('assets/fonts/Pretendard-Bold.woff') format('woff'),
+        url('assets/fonts/Pretendard-Bold.ttf') format('ttf')
+}

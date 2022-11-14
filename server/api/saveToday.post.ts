@@ -13,12 +13,11 @@ export default defineEventHandler(async (event:H3Event) => {
   const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1530 : 630
   const body = await readBody(event)
   if (body.key !== '==g&13^4b6e5t5i5aa5@#w0^x%jzlvcd(%_l1j4lfgj=7=(6#d') return{}
-
   if(hourNow > timeMarketClose){ 
     await prisma.dailyStocks.upsert({
       where:{stocks:JSON.stringify(stocks) },
       update:{},
-      create:{date:TODAY , stocks:JSON.stringify(stocks)} as Prisma.DailyStocksCreateInput
+      create:{date:TODAY, stocks:JSON.stringify(stocks)} as Prisma.DailyStocksCreateInput
     })
   }
 

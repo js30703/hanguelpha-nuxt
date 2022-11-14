@@ -1,0 +1,11 @@
+@import './variables.scss';
+
+*{
+    margin: 0px;
+    padding: 0px;
+    font-family: "Pretendard-Light";
+}
+
+body {
+    background-color: $primary;
+}
