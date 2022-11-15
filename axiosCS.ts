@@ -10,7 +10,6 @@ const Axios = axios.create({
 })
 
 export async function fetchRank(){
-    console.log("fetchRank")
     const res = await Axios.get("/api/rank")
     return res.data
 }
