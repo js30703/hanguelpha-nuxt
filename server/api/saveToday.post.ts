@@ -35,15 +35,17 @@ export default defineEventHandler(async (event:H3Event) => {
   sorted_list.map(item=>{
       const url_detail_today = `https://m.stock.naver.com/api/stock/${item.code}/integration`
       const url_detail_3year = `https://m.stock.naver.com/api/stock/${item.code}/finance/annual`
+      const url_detail_basic = `https://m.stock.naver.com/api/stock/${item.code}/basic`
       _req_list.push(axiosSS.get(url_detail_today))
       _req_list.push(axiosSS.get(url_detail_3year))
+      _req_list.push(axiosSS.get(url_detail_basic))
   })
 
   const res_list = await Promise.all(_req_list)
 
   const rank = sorted_list.map((item,idx)=>{
 
-    const response = [res_list[idx*2], res_list[idx*2+1]]
+    const response = [res_list[idx*3], res_list[idx*3+1], res_list[idx*3+2]]
 
     const totalInfos = response[0].data.totalInfos
       .filter( item => {return ['EPS','BPS','시총',].includes(item.key)})
@@ -60,16 +62,17 @@ export default defineEventHandler(async (event:H3Event) => {
           })
           return acc
         },
-
-      {})
-
-    const closePrice = response[0].data.dealTrendInfos[0].closePrice
-    const ratioTradingMarketCap = (item.tradingValue * 0.01 / Number(totalInfos.marketValue.replaceAll(',','').split('억')[0]) * 100).toFixed(2)
+        {})
+    
+    const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
+    const closeToday = response[2].data.closePrice
+    const ratioTradingMarketCap = (item.tradingValue * 0.01 / Number(totalInfos.marketValue.replaceAll(',','').replaceAll('억','').replaceAll('조','')) * 100).toFixed(2)
     
     return {
       ...item,
       summary:response[1].data.corporationSummary,
-      closeToday:closePrice,
+      closeYesterDay:closeYesterDay,
+      closeToday:closeToday,
       ratioTradingMarketCap:ratioTradingMarketCap,
       ...totalInfos,
       ...annualFinance,
