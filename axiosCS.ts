@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 
 const Axios = axios.create({
     baseURL: process.env.NODE_ENV == "development"? "http://localhost:3000" : "https://hanguelpha-nuxt.vercel.app",
@@ -14,6 +14,6 @@ export async function fetchRank(){
         const res = await Axios.get("/api/rank")
         return res.data
     } catch(e){
-        console.log(e)
+        throw new AxiosError(e)
     }
 }

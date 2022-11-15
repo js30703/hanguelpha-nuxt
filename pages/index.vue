@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { fetchRank } from "@/axiosCS";
 const { date, ranks } = await fetchRank();
-console.log(ranks);
 const _date = new Date(date);
 const date_kor = `${_date.getFullYear()}년 ${
   _date.getMonth() + 1

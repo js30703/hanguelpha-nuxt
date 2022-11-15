@@ -5,6 +5,9 @@ import { Prisma } from '@prisma/client';
 import prisma from '@/server/_prisma';
 
 const HOW_MANY_DAYS = 2 // 리스트에 들어온 일 수
+const axiosSS = axios.create({
+  withCredentials:false,
+})
 
 export default defineEventHandler(async (event:H3Event) => {
   const TODAY = dayjs().format()
@@ -32,8 +35,8 @@ export default defineEventHandler(async (event:H3Event) => {
   sorted_list.map(item=>{
       const url_detail_today = `https://m.stock.naver.com/api/stock/${item.code}/integration`
       const url_detail_3year = `https://m.stock.naver.com/api/stock/${item.code}/finance/annual`
-      _req_list.push(axios.get(url_detail_today))
-      _req_list.push(axios.get(url_detail_3year))
+      _req_list.push(axiosSS.get(url_detail_today))
+      _req_list.push(axiosSS.get(url_detail_3year))
   })
 
   const res_list = await Promise.all(_req_list)
@@ -138,8 +141,8 @@ async function fetchRisingStockList(){
   const urlUpKosdaq = 'https://m.stock.naver.com/api/stocks/up/KOSDAQ?page=1&pageSize=60'
   const urlUpKospi = 'https://m.stock.naver.com/api/stocks/up/KOSPI?page=1&pageSize=60'
   const res = await Promise.all([
-    axios.get(urlUpKosdaq), 
-    axios.get(urlUpKospi)
+    axiosSS.get(urlUpKosdaq), 
+    axiosSS.get(urlUpKospi)
   ])
   const _data = res[0].data.stocks.concat(res[1].data.stocks)
   return await mergeKospiKosdaq(_data)
