@@ -66,7 +66,7 @@ export default defineEventHandler(async (event:H3Event) => {
     
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice
-    const ratioTradingMarketCap = (item.tradingValue * 0.01 / Number(totalInfos.marketValue.replaceAll(',','').replaceAll('억','').replaceAll('조','')) * 100).toFixed(2)
+    const ratioTradingMarketCap = (item.tradingValue * 0.01 / Number(totalInfos.marketValue.replaceAll(' ','').replaceAll(',','').replaceAll('억','').replaceAll('조','')) * 100).toFixed(2)
     
     return {
       ...item,
