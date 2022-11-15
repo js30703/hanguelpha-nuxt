@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const Axios = axios.create({
-    baseURL: process.env.NODE_ENV == "development"? "http://localhost:3000" : "https://api.example.com",
+    baseURL: process.env.NODE_ENV == "development"? "http://localhost:3000" : "https://hanguelpha-nuxt.vercel.app/",
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

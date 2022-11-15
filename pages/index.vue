@@ -10,8 +10,8 @@ const date_kor = `${_date.getFullYear()}년 ${
 <template>
   <div class="main">
     <section class="main-ctn">
-      <h1>10거래일 간 한국 급등주 목록</h1>
-      <h2 class="date">날짜 : {{ date_kor }}</h2>
+      <h1>한국 급등주 목록</h1>
+      <h2 class="date">기간 : 11 거래일 전 ~ {{ date_kor }}</h2>
       <!--  "name", "code", "tradingValue", "detail", "summary", "closeToday", "ratioTradingMarketCap", "marketValue", "eps", "bps", "매출액", "영업이익", "당좌비율" ] -->
       <div class="rankCard" :key="rank.name" v-for="rank in ranks">
         <div class="rankCard__name">{{ rank.name }}</div>
@@ -19,6 +19,7 @@ const date_kor = `${_date.getFullYear()}년 ${
       </div>
     </section>
   </div>
+  ƒ
 </template>
 
 <style lang="scss" scoped>
