@@ -8,8 +8,9 @@ export default defineNuxtPlugin((nuxtApp) => {
       return
       }
       if (error.name == 'AxiosError' && error.response.data.statusCode == 500 ) {
-        delete error.response.data.stack
+        // delete error.response.data.stack
         // client.datasets.ingestEvents('vercel', {error:error.response.data})
+        return
       }
     }
   });
