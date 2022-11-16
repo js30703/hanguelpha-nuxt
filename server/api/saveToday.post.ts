@@ -40,9 +40,9 @@ export default defineEventHandler(async (event:H3Event) => {
       _req_list.push(axiosSS.get(url_detail_3year))
       _req_list.push(axiosSS.get(url_detail_basic))
   })
-
   const res_list = await Promise.all(_req_list)
-
+  
+  // 랭크 계산하기
   const rank = sorted_list.map((item,idx)=>{
 
     const response = [res_list[idx*3], res_list[idx*3+1], res_list[idx*3+2]]
@@ -79,6 +79,8 @@ export default defineEventHandler(async (event:H3Event) => {
     }
   })
   .sort((a,b)=>{return b.ratioTradingMarketCap - a.ratioTradingMarketCap})
+  .filter((item:any)=>{ return Number(item.ratioTradingMarketCap) >= 20 })
+
   
   // db에 저장
   if(hourNow > timeMarketClose){ 

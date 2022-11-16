@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 import { fetchRank } from "@/axiosCS";
+import { io } from "socket.io-client";
+const socket = io("wss://socket.stocks-for-scalping.com", {
+  reconnectionDelayMax: 10000,
+});
 const { date, ranks } = await fetchRank();
 
 function dateFormat(date: string) {
@@ -9,20 +13,18 @@ function dateFormat(date: string) {
   }월 ${_date.getDate()}일`;
   return date_kor;
 }
-
-// <!--  "name", "code", "tradingValue", "detail", "summary", "closeToday", "ratioTradingMarketCap", "marketValue", "eps", "bps", "매출액", "영업이익", "당좌비율" ] -->
 </script>
 
 <template>
   <div class="main">
     <section class="main-ctn">
       <h1>한국 급등주 목록</h1>
-      <h2 class="date">기간 : 11 거래일 전 ~ {{ dateFormat(date) }}</h2>
+      <h2 class="date">기간 : 10 거래일 전 ~ {{ dateFormat(date) }}</h2>
       <div class="Card" :key="rank.name" v-for="rank in ranks">
         <div class="Card-header">
           <div class="name">{{ rank.name }}</div>
-          <div class="price">{{ rank.ratioTradingMarketCap }}</div>
-          <!-- <div class="price">??{{ rank.closeToday }}</div> -->
+          <div class="price">{{ rank.ratioTradingMarketCap }}%</div>
+          <div class="price">{{ rank.closeToday }}원</div>
         </div>
         <div class="Card-body">
           거래 상세
@@ -41,8 +43,11 @@ function dateFormat(date: string) {
             </div>
           </div>
         </div>
+        <div class="text-left m-1">자세히보기</div>
         <div class="text-left m-1">시가총액: {{ rank.marketValue }}</div>
-        <div class="text-left m-1">거래 대금 합: {{ rank.tradingValue }}</div>
+        <div class="text-left m-1">
+          거래 대금 합: {{ rank.tradingValue.toLocaleString() }} 백만원
+        </div>
         <div class="text-left m-1">시가총액: {{ rank.marketValue }}</div>
         <div class="text-left m-1">eps: {{ rank.eps }}</div>
         <div class="text-left m-1">bps: {{ rank.bps }}</div>
@@ -68,6 +73,7 @@ function dateFormat(date: string) {
       @extend .center;
       margin: 20px;
       width: 100%;
+      max-width: 480px;
       height: 100%;
       border: 1px solid black;
       border-radius: 10px;
