@@ -39,7 +39,7 @@ onUnmounted(deleteIO);
 <template>
   <div class="live">
     <div class="live-ctn">
-      {{ ranks.ranks }}
+      {{ ranks }}
     </div>
   </div>
 </template>
