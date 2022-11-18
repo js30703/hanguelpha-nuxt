@@ -16,12 +16,15 @@ $screen-xl-min: 1200px;
 
 $break-points:  $screen-0,$screen-md-min,$screen-lg-min;
 
-$primary: pink;
+$primary: rgb(255, 194, 204);
+
 // templates
 // https://github.com/KittyGiraudel/sass-boilerplate
 // https://github.com/topics/scss-template
-$shadow-md: 0 2px 1px -1px rgba(0, 0, 0, 0.08);
-$shadow-lg: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+
+$shadow-1: rgb(255, 194, 204, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+
 
 $filter-white:invert(99%) sepia(5%) saturate(788%) hue-rotate(193deg)
 brightness(120%) contrast(100%);

@@ -20,10 +20,13 @@ rankStore.setRanks(data.value);
       <NuxtLink to="live">LIVE</NuxtLink>
       <h1>한국 급등주 목록</h1>
       <h2 class="date">
-        기간 : 10 거래일 전 ~
-        {{ useDateFormat(data.date, "YYYY년 MM월 DD일").value }}
+        {{ useDateFormat(data.date, "YYYY년 MM월 DD일").value }}({{
+          data.ranks.length
+        }}) 개
       </h2>
-      <RankCard :key="rank?.name" v-for="rank in data.ranks" :rank="rank" />
+      <div class="cards">
+        <RankCard :key="rank?.name" v-for="rank in data.ranks" :rank="rank" />
+      </div>
     </section>
   </div>
 </template>
@@ -37,6 +40,11 @@ rankStore.setRanks(data.value);
     @extend .v-stack;
     width: 95vw;
     margin: 20px;
+    .cards {
+      @extend .h-stack;
+      @extend .center;
+      flex-wrap: wrap;
+    }
   }
 }
 </style>
