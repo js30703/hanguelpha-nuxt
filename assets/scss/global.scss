@@ -9,6 +9,10 @@
 body {
     background-color: $primary;
 }
+a {
+    text-decoration: none;
+    color: black;
+}
 .text-left{
     width: 100%;
     text-align: left;

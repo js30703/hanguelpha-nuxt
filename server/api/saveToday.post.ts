@@ -5,9 +5,18 @@ import { Prisma } from '@prisma/client';
 import prisma from '@/server/_prisma';
 
 const HOW_MANY_DAYS = 2 // 리스트에 들어온 일 수
+
 const axiosSS = axios.create({
   withCredentials:false,
 })
+
+axiosSS.interceptors.response.use(
+  response => response,
+  error => {
+    console.log(error)
+    return Promise.reject(error)
+  }
+)
 
 export default defineEventHandler(async (event:H3Event) => {
   const TODAY = dayjs().format()
@@ -44,16 +53,18 @@ export default defineEventHandler(async (event:H3Event) => {
   
   // 랭크 계산하기
   const rank = sorted_list.map((item,idx)=>{
-
     const response = [res_list[idx*3], res_list[idx*3+1], res_list[idx*3+2]]
+    
+    // if (!(response[0].status == response[1].status == response[2].status ) ) return null 
 
     const totalInfos = response[0].data.totalInfos
       .filter( item => {return ['EPS','BPS','시총',].includes(item.key)})
       .reduce(
         (acc,cur)=>{acc[cur.code] = cur.value; return acc},
         {})
-
-    const annualFinance = response[1].data.financeInfo.rowList
+    let annualFinance = {}
+    if (response[1].data.financeInfo){
+      annualFinance = response[1].data.financeInfo.rowList
       .filter( item => {return ['매출액','영업이익','당좌비율'].includes(item.title)})
       .reduce(
         (acc,cur)=>{
@@ -63,6 +74,7 @@ export default defineEventHandler(async (event:H3Event) => {
           return acc
         },
         {})
+    } 
     
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice
@@ -78,6 +90,7 @@ export default defineEventHandler(async (event:H3Event) => {
       ...annualFinance,
     }
   })
+  .filter((item:any)=>{ return item !== null })
   .sort((a,b)=>{return b.ratioTradingMarketCap - a.ratioTradingMarketCap})
   .filter((item:any)=>{ return Number(item.ratioTradingMarketCap) >= 20 })
 
