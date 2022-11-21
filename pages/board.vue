@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useDateFormat } from "@vueuse/core";
-import { useRankStore } from "@/store/ranks";
 
 const { data } = useFetch("/api/rank", {
   onRequestError: (err) => {
@@ -10,8 +9,6 @@ const { data } = useFetch("/api/rank", {
     throw err;
   },
 });
-const rankStore = useRankStore();
-rankStore.setRanks(data.value);
 </script>
 
 <template>

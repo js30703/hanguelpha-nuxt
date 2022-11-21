@@ -21,4 +21,7 @@ export default defineNuxtConfig({
       pathPrefix: true,
     },
   ], 
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' }
+  },
 })
