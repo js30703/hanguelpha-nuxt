@@ -1,15 +1,11 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  props: ["isOpen"],
-});
+<script lang="ts" setup>
+const { isOpen } = defineProps(["isOpen"]);
 </script>
 
 <template>
   <Transition name="modal" :duration="{ enter: 550, leave: 80 }">
-    <div class="modal">
-      <div class="modal-ctn" v-show="isOpen">
+    <div class="modal" v-show="isOpen" :class="{ 'modal-open': isOpen }">
+      <div class="modal-ctn">
         <slot />
       </div>
     </div>
@@ -17,7 +13,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss" >
-@import "~/assets/scss/_base.scss";
+@import "@/assets/scss/_base.scss";
 .modal {
   @extend .center;
   top: 0px;
@@ -46,14 +42,14 @@ export default defineComponent({
 
   &-ctn {
     @extend .v-stack;
-    @include responsive(max-width, (100vw, 100vw, 100vw, 100vw, 970px));
-    @include responsive(height, (100vh, 100vh, 100vh, 100vh, auto));
+    @include responsive(max-width, (100vw, 100vw, 40vw));
+    @include responsive(height, (100vh, 100vh, auto));
     margin: 0px;
     z-index: 16;
     padding: 0px;
     background: #fefefe;
     position: static;
-    @include border-radius($radius-md);
+    border-radius: 20px;
   }
   &-enter-active &-ctn {
     transition-delay: 0.25s;
@@ -75,7 +71,7 @@ export default defineComponent({
 
   &-header {
     @extend .row;
-    @include responsive(width, (90%, 90%, 90%, 90%, 95%));
+    @include responsive(width, (90%, 90%, 95%));
     padding: 20px;
 
     .title-modal {
@@ -93,19 +89,25 @@ export default defineComponent({
 
   &-body {
     @extend .v-stack;
-    @include responsive(height, (90vh, 90vh, 90vh, 90vh, 60vh));
-
+    @include responsive(height, (90vh, 90vh, 60vh));
+    border-radius: 20px;
     overflow-x: hidden;
     overflow-y: auto;
     width: 100%;
     background-color: white;
     padding-bottom: 10px;
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-track {
+      background: white;
+    }
     .input-row {
       @extend .v-stack;
       width: 90%;
       .title-label {
         font-family: "Pretendard-Bold";
-        @include responsive(font-size, (12px, 12px, 12px, 12px, 14px));
+        @include responsive(font-size, (12px, 12px, 14px));
         margin: 5px 0;
         width: 100%;
         span {
@@ -121,6 +123,7 @@ export default defineComponent({
     }
   }
   &-footer {
+    width: 100%;
     padding: 10px;
   }
 }

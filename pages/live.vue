@@ -21,7 +21,7 @@ onMounted(() => {
     console.log("disconnected");
   });
   io_client.on("receiveMessage", (message) => {
-    // console.log(message);
+    console.log(message);
     // _ranks[message.code].closeToday = message.closeToday;
   });
 });

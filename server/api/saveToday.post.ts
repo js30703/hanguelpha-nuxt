@@ -21,17 +21,18 @@ axiosSS.interceptors.response.use(
 export default defineEventHandler(async (event:H3Event) => {
   const TODAY = dayjs().format()
   const hourNow = dayjs().hour() * 100 + dayjs().minute()
-  const stocks = await fetchRisingStockList()
-  const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1530 : 630
+  // validate request
   const body = await readBody(event)
   if (body.key !== '==g&13^4b6e5t5i5aa5@#w0^x%jzlvcd(%_l1j4lfgj=7=(6#d') return{}
-  if(hourNow > timeMarketClose){ 
-    await prisma.dailyStocks.upsert({
-      where:{stocks:JSON.stringify(stocks) },
-      update:{},
-      create:{date:TODAY, stocks:JSON.stringify(stocks)} as Prisma.DailyStocksCreateInput
-    })
-  }
+  
+  const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1530 : 630
+  if(hourNow < timeMarketClose){ return {message:'Invalid time'} }
+  // 리스트 가져오기
+  const stocks = await fetchRisingStockList()
+
+  const STOCKS = await prisma.dailyStocks.findUnique({where:{stocks:JSON.stringify(stocks)}})
+  if (STOCKS !== null) return {message:'no new data'}
+  await prisma.dailyStocks.create({data:{date:TODAY, stocks:JSON.stringify(stocks)}})
 
   // 10일간의 데이터를 가져온다.
   const q = await prisma.dailyStocks.findMany({take: 10})
@@ -54,8 +55,6 @@ export default defineEventHandler(async (event:H3Event) => {
   // 랭크 계산하기
   const rank = sorted_list.map((item,idx)=>{
     const response = [res_list[idx*3], res_list[idx*3+1], res_list[idx*3+2]]
-    
-    // if (!(response[0].status == response[1].status == response[2].status ) ) return null 
 
     const totalInfos = response[0].data.totalInfos
       .filter( item => {return ['EPS','BPS','시총',].includes(item.key)})
@@ -96,13 +95,8 @@ export default defineEventHandler(async (event:H3Event) => {
 
   
   // db에 저장
-  if(hourNow > timeMarketClose){ 
-    await prisma.dailyRank.upsert({
-      where:{rank:JSON.stringify(rank) },
-      update:{},
-      create:{date:TODAY , rank:JSON.stringify(rank)} as Prisma.DailyRankCreateInput
-    })
-  }
+  await prisma.dailyRank.create({data:{date:TODAY, rank:JSON.stringify(rank)}})
+  
   
   return {
     date:TODAY,

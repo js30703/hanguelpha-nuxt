@@ -18,6 +18,7 @@ rankStore.setRanks(data.value);
   <div class="main">
     <section class="main-ctn">
       <NuxtLink to="live">LIVE</NuxtLink>
+
       <h1>한국 급등주 목록</h1>
       <h2 class="date">
         {{ useDateFormat(data.date, "YYYY년 MM월 DD일").value }}({{
