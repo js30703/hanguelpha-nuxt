@@ -42,8 +42,8 @@ const { isOpen } = defineProps(["isOpen"]);
 
   &-ctn {
     @extend .v-stack;
-    @include responsive(max-width, (100vw, 100vw, 40vw));
-    @include responsive(height, (100vh, 100vh, auto));
+    @include responsive(max-width, (100vw, 50vw, 40vw));
+    @include responsive(height, (80vh, 80vh, auto));
     margin: 0px;
     z-index: 16;
     padding: 0px;

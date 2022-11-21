@@ -3,7 +3,7 @@
 
 <template>
   <div class="layout">
-    <nav>hi</nav>
+    <Nav></Nav>
     <slot />
   </div>
 </template>

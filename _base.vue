@@ -10,4 +10,9 @@
 
 <style lang="scss" scoped>
 @import "@/assets/scss/_base.scss";
+
+._base_ {
+  &-ctn {
+  }
+}
 </style>

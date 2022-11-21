@@ -15,6 +15,10 @@ const toggleOpen = () => {
   const layout = document.querySelector("body").classList;
   isOpen.value ? layout.add("openModal") : layout.remove("openModal");
 };
+let commentsOpen = ref(false);
+const toggleComments = () => {
+  commentsOpen.value = !commentsOpen.value;
+};
 </script>
 
 <template>
@@ -44,6 +48,8 @@ const toggleOpen = () => {
         <div class="name">
           <h2>{{ rank.name }}</h2>
         </div>
+        <div class="close">{{ rank.closeToday }}원</div>
+
         <Button @click="toggleOpen">닫기</Button>
       </div>
       <div class="Card-body modal-body">
@@ -81,16 +87,20 @@ const toggleOpen = () => {
               <div class="value">{{ rank.bps }}</div>
             </div>
           </div>
-
-          <div class="row">
-            <div class="name">거래 대금 합</div>
-            <div class="value">{{ moneyScaleUp(rank.tradingValue) }}</div>
+          <div class="row m-1">
+            <div class="row">
+              <div class="name">거래 대금 합</div>
+              <div class="value">{{ moneyScaleUp(rank.tradingValue) }}</div>
+            </div>
+            <div class="row">
+              <div class="name">시가총액</div>
+              <div class="value">{{ rank.marketValue }}</div>
+            </div>
           </div>
-          <div class="row">
-            <div class="name">시가총액</div>
-            <div class="value">{{ rank.marketValue }}</div>
-          </div>
-          <div class="v-stack m-3">
+          <Button @click="toggleComments">
+            {{ !commentsOpen ? "더 보기" : "닫기" }}</Button
+          >
+          <div class="v-stack m-3" v-show="commentsOpen">
             <div class="m-3" v-for="(sent, idx) in rank.summary" :key="idx">
               {{ sent }}
             </div>
@@ -128,7 +138,7 @@ const toggleOpen = () => {
                 </td>
               </tr>
             </tbody>
-            단위: 억, %
+            <div class="info">단위: 억, %</div>
           </table>
         </div>
       </div>
@@ -214,7 +224,11 @@ const toggleOpen = () => {
     table {
       width: 100%;
       text-align: center;
-
+      .info {
+        width: 100%;
+        text-align: right;
+        font-size: 12px;
+      }
       thead {
         width: 100%;
         tr {
@@ -268,6 +282,10 @@ const toggleOpen = () => {
     &-header {
       .name {
         margin-left: 20px;
+      }
+      .close {
+        margin-left: 20px;
+        width: 30vw;
       }
       .button {
         margin-left: auto;
