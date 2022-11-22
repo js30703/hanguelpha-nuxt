@@ -32,22 +32,28 @@ const toggleComments = () => {
         {{ rank.name }}
       </NuxtLink>
 
-      <div class="tooltip">
-        {{ rank.closeToday }}원
-        <span>전일 종가</span>
-      </div>
-      <div class="tooltip">
+      <Tooltip tooltip="전일 종가"> {{ rank.closeToday }}원 </Tooltip>
+
+      <Tooltip tooltip="거래대금 합 / 시가총액">
         {{ rank.ratioTradingMarketCap }}%
-        <span>거래대금 합 / 시가총액</span>
-      </div>
+      </Tooltip>
 
       <Button @click="toggleOpen">자세히</Button>
     </div>
     <Modal :isOpen="isOpen">
       <div class="modal-header">
-        <div class="name">
-          <h2>{{ rank.name }}</h2>
-        </div>
+        <NuxtLink
+          class="name"
+          :to="`https://m.stock.naver.com/domestic/stock/${rank.code}/total`"
+          target="_blank"
+        >
+          {{ rank.name }}
+        </NuxtLink>
+
+        <Tooltip tooltip="거래대금 합 / 시가총액">
+          {{ rank.ratioTradingMarketCap }}%
+        </Tooltip>
+
         <div class="close">{{ rank.closeToday }}원</div>
 
         <Button @click="toggleOpen">닫기</Button>
@@ -172,43 +178,6 @@ const toggleComments = () => {
       margin: 8px;
       font-family: "Pritandard-Bold";
     }
-    .tooltip {
-      font-size: 20px;
-      margin: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-left: 10px;
-
-      position: relative;
-      display: inline-block;
-      border-bottom: 1px dotted black;
-    }
-
-    /* Tooltip text */
-    .tooltip span {
-      visibility: hidden;
-      width: 120px;
-      background-color: $primary;
-      color: #fff;
-      font-size: 12px;
-      text-align: center;
-      padding: 5px 0;
-      border-radius: 6px;
-
-      /* Position the tooltip text - see examples below! */
-      position: absolute;
-
-      z-index: 1;
-      width: 120px;
-      bottom: 100%;
-      left: 50%;
-      margin-left: -60px;
-    }
-
-    /* Show the tooltip text when you mouse over the tooltip container */
-    .tooltip:hover span {
-      visibility: visible;
-    }
   }
   &-body {
     @extend .v-stack;
@@ -282,6 +251,9 @@ const toggleComments = () => {
     &-header {
       .name {
         margin-left: 20px;
+        font-family: "Pritandard-Bold";
+        font-size: 25px;
+        font-weight: 600;
       }
       .close {
         margin-left: 20px;

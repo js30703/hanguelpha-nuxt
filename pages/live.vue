@@ -8,22 +8,10 @@ const ranks = ref({
     name: "name",
     code: "name",
     ratioToday: "name",
-    close: 55555,
-    price: 44444,
+    close: 555555,
+    price: 555555,
   },
 });
-
-function secondsToHms(d) {
-  d = Number(d);
-  var h = Math.floor(d / 3600);
-  var m = Math.floor((d % 3600) / 60);
-  var s = Math.floor((d % 3600) % 60);
-
-  var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-  var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-  var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
-  return hDisplay + mDisplay + sDisplay;
-}
 
 // 페이지에 안그려짐
 onMounted(() => {
@@ -39,26 +27,40 @@ onMounted(() => {
   });
 
   io_client.on("receiveMessage", (message) => {
-    console.log(secondsToHms(message.time));
     let item = ranks.value[message.code];
-
+    let _close = Number(item.close.replaceAll(",", ""));
     ranks.value[message.code] = {
-      ...ranks.value[message.code],
+      ...item,
       ...message,
-      ratioToday: ((item.close - message.now) / item.close).toFixed(2),
+      ratioToday: (((message.price - _close) / _close) * 100).toFixed(2),
     };
 
     let tempt = {};
 
     Object.entries(ranks.value)
       .sort((b: [string, any], a: [string, any]) => {
-        return a[1].ratioToday - b[1].ratioToday;
+        if (a[1].ratioToday && b[1].ratioToday) {
+          return a[1].ratioToday - b[1].ratioToday;
+        }
+        if (a[1].ratioToday) {
+          return 1;
+        }
+        return -1;
       })
       .map((v: [string, object]) => (tempt[v[0]] = v[1]));
 
-    Object.assign(ranks.value, tempt);
+    ranks.value = tempt;
   });
 });
+function getRatioColor(ratio) {
+  if (ratio > 0) {
+    return "color:red";
+  }
+  if (ratio < 0) {
+    return "color:blue";
+  }
+  return "color:gray";
+}
 
 function deleteIO() {
   if (!io_client) return;
@@ -73,17 +75,28 @@ onUnmounted(deleteIO);
 <template>
   <div class="live">
     <div class="live-ctn">
-      <div class="rank-item" v-for="rank in ranks" :key="rank?.code">
-        <div class="name">
-          {{ rank?.name }}
-        </div>
-        <div class="close">
-          {{ rank?.close }}
-        </div>
-        <div class="now">
+      <div
+        class="rank-item"
+        v-for="rank in ranks"
+        :key="rank?.code"
+        v-show="rank.ratioToday"
+      >
+        <NuxtLink
+          class="name"
+          :to="`https://m.stock.naver.com/domestic/stock/${
+            rank.code.split('A')[1]
+          }/total`"
+          target="_blank"
+        >
+          {{ rank.name }}
+        </NuxtLink>
+
+        <div class="now" :style="getRatioColor(rank.ratioToday)">
           {{ rank?.price }}
         </div>
-        <div class="ratio">{{ rank?.ratioToday }}%</div>
+        <div class="ratio" :style="getRatioColor(rank.ratioToday)">
+          {{ rank?.ratioToday }}%
+        </div>
       </div>
     </div>
   </div>
@@ -103,6 +116,18 @@ onUnmounted(deleteIO);
       margin: 8px;
       width: 80vw;
       justify-content: space-between;
+      .name {
+        width: 50%;
+        text-align: left;
+      }
+      .now {
+        width: 25%;
+        text-align: right;
+      }
+      .ratio {
+        width: 25%;
+        text-align: right;
+      }
     }
   }
 }
