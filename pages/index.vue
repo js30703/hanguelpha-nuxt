@@ -3,7 +3,7 @@
 
 <template>
   <div class="home">
-    <div class="home-ctn"></div>
+    <div class="home-ctn">작업중</div>
   </div>
 </template>
 
