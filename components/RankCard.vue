@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useDateFormat } from "@vueuse/core";
+import { useDateFormat, useMediaQuery } from "@vueuse/core";
 const { rank } = defineProps(["rank"]);
 function moneyScaleUp(money: number) {
   return (
@@ -19,6 +19,7 @@ let commentsOpen = ref(false);
 const toggleComments = () => {
   commentsOpen.value = !commentsOpen.value;
 };
+const isSmallScreen = useMediaQuery("(max-width: 768px)");
 </script>
 
 <template>
@@ -42,21 +43,24 @@ const toggleComments = () => {
     </div>
     <Modal :isOpen="isOpen">
       <div class="modal-header">
-        <NuxtLink
-          class="name"
-          :to="`https://m.stock.naver.com/domestic/stock/${rank.code}/total`"
-          target="_blank"
-        >
-          {{ rank.name }}
-        </NuxtLink>
-
-        <Tooltip tooltip="거래대금 합 / 시가총액">
-          {{ rank.ratioTradingMarketCap }}%
-        </Tooltip>
-
-        <div class="close">{{ rank.closeToday }}원</div>
-
-        <Button @click="toggleOpen">닫기</Button>
+        <div class="row">
+          <NuxtLink
+            class="name"
+            :to="`https://m.stock.naver.com/domestic/stock/${rank.code}/total`"
+            target="_blank"
+          >
+            {{ rank.name }}
+          </NuxtLink>
+          <div class="v-stack">
+            <Tooltip tooltip="거래대금 합 / 시가총액">
+              {{ rank.ratioTradingMarketCap }}%
+            </Tooltip>
+            <div class="close">{{ rank.closeToday }}원</div>
+          </div>
+        </div>
+        <Button @click="toggleOpen">
+          {{ isSmallScreen ? "X" : "닫기" }}
+        </Button>
       </div>
       <div class="Card-body modal-body">
         <table>
@@ -158,8 +162,6 @@ const toggleComments = () => {
 @import "@/assets/scss/_base.scss";
 .Card {
   @extend .center;
-  // @include responsive(width, (100%, 150px, 150px));
-  // @include responsive(height, (80px, 200px, 200px));
   width: 150px;
   height: 200px;
   position: relative;
@@ -173,9 +175,11 @@ const toggleComments = () => {
     @extend .center;
     width: 100%;
     justify-content: space-between;
+
     .name {
       font-size: 20px;
-      margin: 8px;
+      margin: 8px 0;
+
       font-family: "Pritandard-Bold";
     }
   }
@@ -254,14 +258,29 @@ const toggleComments = () => {
         font-family: "Pritandard-Bold";
         font-size: 25px;
         font-weight: 600;
+        min-width: 150px;
+      }
+      .row {
+        @extend .h-stack;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .v-stack {
+        @extend .v-stack;
+        width: 30%;
       }
       .close {
-        margin-left: 20px;
-        width: 30vw;
+        min-width: 80px;
+        text-align: center;
+        margin: 0;
       }
       .button {
-        margin-left: auto;
+        min-width: 80px;
+        text-align: center;
       }
+    }
+    &-body {
+      border-radius: 0;
     }
   }
 }

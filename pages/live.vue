@@ -3,15 +3,16 @@ import { io } from "socket.io-client";
 import { onBeforeRouteLeave } from "vue-router";
 
 let io_client = null;
+
 const ranks = ref({
   test: {
     name: "name",
     code: "name",
-    ratioToday: "name",
+    ratioToday: 555555,
     close: 555555,
     price: 555555,
   },
-});
+} as any);
 
 // 페이지에 안그려짐
 onMounted(() => {
