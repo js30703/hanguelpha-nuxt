@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useDateFormat } from "@vueuse/core";
 
-const { data } = useFetch("/api/board", {
+const { data } = useFetch("/api/rank", {
   onRequestError: (err) => {
     throw err;
   },
@@ -18,7 +18,6 @@ const { data } = useFetch("/api/board", {
       <h2 class="date">
         {{ useDateFormat(data.date, "YYYY년 MM월 DD일").value }} 종가 기준
       </h2>
-      <div>M{{ data.mean.toFixed(2) }}, D{{ data.std.toFixed(2) }}</div>
       <div class="cards">
         <RankCard :key="rank?.name" v-for="rank in data.ranks" :rank="rank" />
       </div>

@@ -76,8 +76,10 @@ onUnmounted(deleteIO);
 <template>
   <div class="live">
     <div class="live-ctn">
+      <div class="rank-item" v-if="ranks.test">금일장은 마감되었습니다.</div>
       <div
         class="rank-item"
+        v-else
         v-for="rank in ranks"
         :key="rank?.code"
         v-show="rank.ratioToday"

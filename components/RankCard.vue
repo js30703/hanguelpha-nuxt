@@ -30,7 +30,7 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
         :to="`https://m.stock.naver.com/domestic/stock/${rank.code}/total`"
         target="_blank"
       >
-        {{ rank.name }}
+        {{ rank.name }} ({{ rank.detail.length }})
       </NuxtLink>
 
       <Tooltip tooltip="전일 종가"> {{ rank.closeToday }}원 </Tooltip>

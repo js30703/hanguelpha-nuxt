@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 import prisma from '@/server/_prisma';
 
 const HOW_MANY_DAYS = 2 // 리스트에 들어온 일 수
-
+const ratioTradingMarketCapMin = 2
 const axiosSS = axios.create({
   withCredentials:false,
 })
@@ -77,7 +77,7 @@ export default defineEventHandler(async (event:H3Event) => {
     
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice
-    const ratioTradingMarketCap = (item.tradingValue * 0.01 / Number(totalInfos.marketValue.replaceAll(' ','').replaceAll(',','').replaceAll('억','').replaceAll('조','')) * 100).toFixed(2)
+    const ratioTradingMarketCap = (item.tradingValue * 0.01 * 0.1 / Number(totalInfos.marketValue.replaceAll(' ','').replaceAll(',','').replaceAll('억','').replaceAll('조','')) * 100).toFixed(2)
     
     return {
       ...item,
@@ -91,7 +91,7 @@ export default defineEventHandler(async (event:H3Event) => {
   })
   .filter((item:any)=>{ return item !== null })
   .sort((a,b)=>{return b.ratioTradingMarketCap - a.ratioTradingMarketCap})
-  .filter((item:any)=>{ return Number(item.ratioTradingMarketCap) >= 20 })
+  .filter((item:any)=>{ return Number(item.ratioTradingMarketCap) >= ratioTradingMarketCapMin })
 
   
   // db에 저장
