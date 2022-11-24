@@ -130,8 +130,8 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
             </thead>
             <tbody>
               <tr>
-                <td>당좌비율</td>
-                <td v-for="year in rank.당좌비율" :key="year">
+                <td>매출액</td>
+                <td v-for="year in rank.매출액" :key="year">
                   {{ year.split("::")[1] }}
                 </td>
               </tr>
@@ -142,8 +142,8 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
                 </td>
               </tr>
               <tr>
-                <td>매출액</td>
-                <td v-for="year in rank.매출액" :key="year">
+                <td>당좌비율</td>
+                <td v-for="year in rank.당좌비율" :key="year">
                   {{ year.split("::")[1] }}
                 </td>
               </tr>
@@ -217,8 +217,7 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
       }
 
       tbody {
-        flex-direction: column-reverse;
-        @extend .h-stack;
+        @extend .v-stack;
       }
 
       tr {
