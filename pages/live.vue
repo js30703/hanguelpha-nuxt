@@ -93,7 +93,10 @@ onUnmounted(deleteIO);
 </script>
 
 <template>
-  <div class="live">
+  <div class="live" v-if="ranks.test">
+    <div class="mean-board">금일장은 마감되었습니다.</div>
+  </div>
+  <div class="live" v-else>
     <div class="mean-board">
       <div class="row">{{ getPercent() }}%</div>
       <div class="row">
@@ -109,10 +112,8 @@ onUnmounted(deleteIO);
       </div>
     </div>
     <div class="live-ctn">
-      <div class="rank-item" v-if="ranks.test">금일장은 마감되었습니다.</div>
       <div
         class="rank-item"
-        v-else
         v-for="rank in ranks"
         :key="rank?.code"
         v-show="rank.ratioToday"
