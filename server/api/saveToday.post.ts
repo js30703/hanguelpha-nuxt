@@ -35,7 +35,7 @@ export default defineEventHandler(async (event:H3Event) => {
   await prisma.dailyStocks.create({data:{date:TODAY, stocks:JSON.stringify(stocks)}})
 
   // 10일간의 데이터를 가져온다.
-  const q = await prisma.dailyStocks.findMany({take: 10})
+  const q = await prisma.dailyStocks.findMany({take: 10,orderBy:{date:'desc'}})
 
   // 거래대금으로 정렬하고 중복 등장한 종목만 남김 리스트로 변환
   const sorted_list = await mergeStockDailyHistory(q)
