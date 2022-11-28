@@ -7,7 +7,7 @@ import { cutFixed } from '../../utils/mean';
 
 const HOW_MANY_DAYS = 2 // 리스트에 들어온 일 수
 const ratioTradingMarketCapMin = 2
-console.log(process.env.DURIAN_KEY)
+
 const axiosSS = axios.create({
   withCredentials:false,
 })
@@ -79,8 +79,8 @@ export default defineEventHandler(async (event:H3Event) => {
         },
         {})
       
-    const sales = annualFinance.매출액.map(item=>{cutFixed(item.split('::')[1])})
-    const margins = annualFinance.영업이익.map(item=>{cutFixed(item.split('::')[1])})
+    const sales = annualFinance.매출액.slice(0,-1).map(item=>{cutFixed(item.split('::')[1])})
+    const margins = annualFinance.영업이익.slice(0,-1).map(item=>{cutFixed(item.split('::')[1])})
 
     if (isDecrease(sales)) return;
     if (isDecrease(margins)) return;
