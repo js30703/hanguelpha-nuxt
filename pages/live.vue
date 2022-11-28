@@ -128,7 +128,7 @@ onUnmounted(deleteIO);
           <div
             v-show="getPercent() > 80"
             :class="{
-              buy: true,
+              signal: true,
               high:
                 std_list[1] > rank.ratioToday && rank.ratioToday > std_list[2],
               low:
@@ -180,7 +180,7 @@ onUnmounted(deleteIO);
         justify-content: flex-start;
         width: 50%;
         text-align: left;
-        .buy {
+        .signal {
           width: 15px;
           aspect-ratio: 1;
           border-radius: 100%;

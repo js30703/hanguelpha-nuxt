@@ -23,7 +23,7 @@ export default defineEventHandler(async (event:H3Event) => {
   const hourNow = dayjs().hour() * 100 + dayjs().minute()
   // validate request
   const body = await readBody(event)
-  if (body.key !== '==g&13^4b6e5t5i5aa5@#w0^x%jzlvcd(%_l1j4lfgj=7=(6#d') return{}
+  if (body.key !== process.env.DURIAN_KEY) return{}
   
   const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1530 : 630
   if(hourNow < timeMarketClose){ return {message:'Invalid time'} }
