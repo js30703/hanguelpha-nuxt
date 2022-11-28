@@ -3,9 +3,11 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import { Prisma } from '@prisma/client';
 import prisma from '@/server/_prisma';
+import { cutFixed } from '../../utils/mean';
 
 const HOW_MANY_DAYS = 2 // 리스트에 들어온 일 수
 const ratioTradingMarketCapMin = 2
+console.log(process.env.DURIAN_KEY)
 const axiosSS = axios.create({
   withCredentials:false,
 })
@@ -23,7 +25,7 @@ export default defineEventHandler(async (event:H3Event) => {
   const hourNow = dayjs().hour() * 100 + dayjs().minute()
   // validate request
   const body = await readBody(event)
-  if (body.key !== process.env.DURIAN_KEY) return{}
+  if (body.key !== process.env.DURIAN_KEY) return;
   
   const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1530 : 630
   if(hourNow < timeMarketClose){ return {message:'Invalid time'} }
@@ -56,25 +58,33 @@ export default defineEventHandler(async (event:H3Event) => {
   const rank = sorted_list.map((item,idx)=>{
     const response = [res_list[idx*3], res_list[idx*3+1], res_list[idx*3+2]]
 
+    if (!response[1].data.financeInfo) return;
+
+    
     const totalInfos = response[0].data.totalInfos
       .filter( item => {return ['EPS','BPS','시총',].includes(item.key)})
       .reduce(
         (acc,cur)=>{acc[cur.code] = cur.value; return acc},
         {})
-    let annualFinance = {}
-    if (response[1].data.financeInfo){
-      annualFinance = response[1].data.financeInfo.rowList
+
+    const annualFinance = response[1].data.financeInfo.rowList
       .filter( item => {return ['매출액','영업이익','당좌비율'].includes(item.title)})
       .reduce(
         (acc,cur)=>{
           acc[cur.title] = Object.keys(cur.columns).map(key=>{
-            return key.slice(0,4)+'::'+cur.columns[key].value
+            const year = key.slice(0,4)
+            return year +'::'+cur.columns[key].value
           })
           return acc
         },
         {})
-    } 
-    
+      
+    const sales = annualFinance.매출액.map(item=>{cutFixed(item.split('::')[1])})
+    const margins = annualFinance.영업이익.map(item=>{cutFixed(item.split('::')[1])})
+
+    if (isDecrease(sales)) return;
+    if (isDecrease(margins)) return;
+
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice
     const ratioTradingMarketCap = (item.tradingValue * 0.01 * 0.1 / Number(totalInfos.marketValue.replaceAll(' ','').replaceAll(',','').replaceAll('억','').replaceAll('조','')) * 100).toFixed(2)
@@ -193,4 +203,11 @@ async function mergeStockDailyHistory(q){
   .map((v:[string,StockDailyTotal])=>v[1])
 // 몇번 이상 중복된 녀석만 남김
   .filter((item:StockDailyTotal)=>{ return item.detail.length >= HOW_MANY_DAYS })
+}
+
+function isDecrease(array){
+  return array.every((item,idx)=>{
+    if(idx === 0) return true
+    return item / array[idx-1]  < 0.95
+  })
 }
