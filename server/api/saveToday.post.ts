@@ -1,9 +1,8 @@
 import {H3Event} from 'h3'
 import axios from 'axios'
 import dayjs from 'dayjs'
-import { Prisma } from '@prisma/client';
 import prisma from '@/server/_prisma';
-import { cutFixed } from '../../utils/mean';
+import { cutFixed , isDecreasing} from '@/utils/mean';
 
 const HOW_MANY_DAYS = 2 // 리스트에 들어온 일 수
 const ratioTradingMarketCapMin = 2
@@ -60,7 +59,6 @@ export default defineEventHandler(async (event:H3Event) => {
 
     if (!response[1].data.financeInfo) return;
 
-    
     const totalInfos = response[0].data.totalInfos
       .filter( item => {return ['EPS','BPS','시총',].includes(item.key)})
       .reduce(
@@ -78,10 +76,16 @@ export default defineEventHandler(async (event:H3Event) => {
           return acc
         },
         {})
+      
+      const sales = annualFinance.매출액.map((item:any)=>{return cutFixed(item.split('::')[1])})
+      const margins = annualFinance.영업이익.map((item:any)=>{return cutFixed(item.split('::')[1])})
+      if(isDecreasing(sales) || isDecreasing(margins)) {
+       return;
+      }
 
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice
-    const ratioTradingMarketCap = (item.tradingValue * 0.01 * 0.1 / Number(totalInfos.marketValue.replaceAll(' ','').replaceAll(',','').replaceAll('억','').replaceAll('조','')) * 100).toFixed(2)
+    const ratioTradingMarketCap = (item.tradingValue * 0.01 * 0.1 / cutFixed(totalInfos.marketValue) * 100).toFixed(2)
     
     return {
       ...item,
