@@ -1,43 +1,17 @@
-# Nuxt 3 Minimal Starter
+# 주식 정보 웹 앱
 
-Look at the [nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
+## 페이지 설명
 
-## Setup
+board 페이지에서 근 10거래일 간 상승률 높은 주식의 랭킹을 매김
+live 페이지에서 랭킹 내 주식들의 실시간 거래 정보를 볼 수 있음
 
-Make sure to install the dependencies:
+- 개인 사정으로 서버를 못 열어서 동작이 안 될 수 있음.
 
-```bash
-# yarn
-yarn install
+## 사용된 기술
 
-# npm
-npm install
-
-# pnpm
-pnpm install --shamefully-hoist
-```
-
-## Development Server
-
-Start the development server on http://localhost:3000
-
-```bash
-npm run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
-# hanguelpha-nuxt
+- VERCEL : ci/cd serverless deployment
+- NUXT3 : vue framework
+- PRISMA : orm
+- KacorchDB : serverless db
+- Scss : css tool
+- Axiom : log collect

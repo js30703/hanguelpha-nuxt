@@ -126,8 +126,14 @@ onUnmounted(deleteIO);
           target="_blank"
         >
           <div
-            class="buy"
-            v-show="std_list[6] > rank.ratioToday && getPercent() > 90"
+            v-show="getPercent() > 80"
+            :class="{
+              buy: true,
+              high:
+                std_list[1] > rank.ratioToday && rank.ratioToday > std_list[2],
+              low:
+                std_list[4] > rank.ratioToday && rank.ratioToday > std_list[5],
+            }"
           ></div>
           {{ rank.name }}
         </NuxtLink>
@@ -178,8 +184,14 @@ onUnmounted(deleteIO);
           width: 15px;
           aspect-ratio: 1;
           border-radius: 100%;
-          background: red;
+
           margin-right: 5px;
+          &.high {
+            background: red;
+          }
+          &.low {
+            background: blue;
+          }
         }
       }
       .now {
