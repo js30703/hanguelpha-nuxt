@@ -1,4 +1,7 @@
-export function cutFixed(num:number, fixed = 2) {
+export function cutFixed(num:number | string, fixed = 2) {
+  if (typeof(num)=== 'string') {
+    num = Number(num.replaceAll(' ','').replaceAll(',','').replaceAll('억','').replaceAll('조',''))
+  }
   return Number(num.toFixed(fixed))
 }
 

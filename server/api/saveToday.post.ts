@@ -78,12 +78,6 @@ export default defineEventHandler(async (event:H3Event) => {
           return acc
         },
         {})
-      
-    const sales = annualFinance.매출액.slice(0,-1).map(item=>{cutFixed(item.split('::')[1])})
-    const margins = annualFinance.영업이익.slice(0,-1).map(item=>{cutFixed(item.split('::')[1])})
-
-    if (isDecrease(sales)) return;
-    if (isDecrease(margins)) return;
 
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice
@@ -203,11 +197,4 @@ async function mergeStockDailyHistory(q){
   .map((v:[string,StockDailyTotal])=>v[1])
 // 몇번 이상 중복된 녀석만 남김
   .filter((item:StockDailyTotal)=>{ return item.detail.length >= HOW_MANY_DAYS })
-}
-
-function isDecrease(array){
-  return array.every((item,idx)=>{
-    if(idx === 0) return true
-    return item / array[idx-1]  < 0.95
-  })
 }
