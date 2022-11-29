@@ -57,7 +57,7 @@ export default defineEventHandler(async (event:H3Event) => {
   const rank = sorted_list.map((item,idx)=>{
     const response = [res_list[idx*3], res_list[idx*3+1], res_list[idx*3+2]]
 
-    // if (!response[1].data.financeInfo) return;
+    if (!response[1].data.financeInfo) return;
 
     const totalInfos = response[0].data.totalInfos
       .filter( item => {return ['EPS','BPS','시총',].includes(item.key)})
@@ -83,7 +83,7 @@ export default defineEventHandler(async (event:H3Event) => {
 
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice
-    const ratioTradingMarketCap = (item.tradingValue * 0.01 * 0.1 / cutFixed(totalInfos.marketValue) * 100).toFixed(2)
+    const ratioTradingMarketCap = cutFixed(item.tradingValue * 0.01 * 0.1 / cutFixed(totalInfos.marketValue) * 100)
     
     return {
       ...item,
