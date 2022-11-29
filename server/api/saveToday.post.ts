@@ -77,11 +77,9 @@ export default defineEventHandler(async (event:H3Event) => {
         },
         {})
       
-      const sales = annualFinance.매출액.map((item:any)=>{return cutFixed(item.split('::')[1])})
-      const margins = annualFinance.영업이익.map((item:any)=>{return cutFixed(item.split('::')[1])})
-      if(isDecreasing(sales) || isDecreasing(margins)) {
-       return;
-      }
+    // const sales = annualFinance.매출액.map((item:any)=>{return cutFixed(item.split('::')[1])})
+    // const margins = annualFinance.영업이익.map((item:any)=>{return cutFixed(item.split('::')[1])})
+    // if(isDecreasing(sales) || isDecreasing(margins))  return;
 
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice

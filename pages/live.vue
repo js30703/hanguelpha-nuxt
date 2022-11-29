@@ -131,8 +131,7 @@ onUnmounted(deleteIO);
               signal: true,
               high:
                 std_list[1] > rank.ratioToday && rank.ratioToday > std_list[2],
-              low:
-                std_list[4] > rank.ratioToday && rank.ratioToday > std_list[5],
+              low: std_list[5] > rank.ratioToday,
             }"
           ></div>
           {{ rank.name }}
