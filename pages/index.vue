@@ -4,10 +4,12 @@
 <template>
   <div class="home">
     <div class="home-ctn">
-      <h1>테마주를 모아보자!</h1>
-      <h2>최근 10거래일 상승 데이터를 정리해요</h2>
-      <h2>무료이고 매일 갱신하고 있어요</h2>
-      <h3>매수 매도 추천 아닙니다. 잘 보고 판단하세요</h3>
+      <h1>
+        테마주를 모아보자! <br />
+        테마모아
+      </h1>
+      <h3>최근 10거래일 상승 데이터를 정리해요</h3>
+      <h3>무료이고 매일 갱신하고 있어요</h3>
     </div>
   </div>
 </template>
@@ -26,6 +28,8 @@
     padding: 20px;
     * {
       padding: 10px 0;
+      width: 100%;
+      text-align: center;
     }
   }
 }

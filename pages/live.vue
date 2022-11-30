@@ -97,6 +97,13 @@ onUnmounted(deleteIO);
     <div class="mean-board">금일장은 마감되었습니다.</div>
   </div>
   <div class="live" v-else>
+    <h1>테마모아 순위</h1>
+    <p>
+      ** 본 페이지에서 언급하는 내용은 개인적인 의견과 판단이며, 시장에
+      참여하시는 분들의 이해를 돕기 위한 목적으로 제작되었습니다.
+      <br />투자결정에 대한 최종판단은 오로지 자신의 판단으로 하여야 하며, 그로
+      인한 투자결과에 따른 책임도 본인에게 귀속됩니다.
+    </p>
     <div class="mean-board" v-show="false">
       <div class="row">{{ getPercent() }}%</div>
       <div class="row">
@@ -163,6 +170,16 @@ onUnmounted(deleteIO);
       padding: 5px;
       text-align: center;
     }
+  }
+  h1 {
+    width: 100%;
+    text-align: center;
+  }
+  p {
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: #666;
   }
   &-ctn {
     @extend .v-stack;
