@@ -7,19 +7,19 @@ const isLarge = useMediaQuery("(min-width: 768px)");
   <nav class="Nav">
     <div class="Nav-ctn">
       <NuxtLink to="/">
-        <span v-if="isLarge">HOME</span>
+        <span v-if="isLarge">설 명</span>
         <Icon name="la:home" v-else />
       </NuxtLink>
-      <NuxtLink to="/board">
-        <span v-if="isLarge">BOARD</span>
+      <NuxtLink to="/rank">
+        <span v-if="isLarge">랭 킹</span>
         <Icon name="icon-park-outline:ranking" v-else />
       </NuxtLink>
       <NuxtLink to="/live">
-        <span v-if="isLarge">LIVE</span>
+        <span v-if="isLarge">실시간</span>
         <Icon name="fluent:live-24-filled" v-else />
       </NuxtLink>
       <NuxtLink to="/login">
-        <span v-if="isLarge">LOGIN</span>
+        <span v-if="isLarge">로그인</span>
         <Icon name="clarity:login-line" v-else />
       </NuxtLink>
     </div>

@@ -97,7 +97,7 @@ onUnmounted(deleteIO);
     <div class="mean-board">금일장은 마감되었습니다.</div>
   </div>
   <div class="live" v-else>
-    <div class="mean-board">
+    <div class="mean-board" v-show="false">
       <div class="row">{{ getPercent() }}%</div>
       <div class="row">
         <span

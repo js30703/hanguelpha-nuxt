@@ -30,7 +30,7 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
         :to="`https://m.stock.naver.com/domestic/stock/${rank.code}/total`"
         target="_blank"
       >
-        {{ rank.name }} ({{ rank.detail.length }})
+        {{ rank.name }}
       </NuxtLink>
 
       <Tooltip tooltip="전일 종가"> {{ rank.closeToday }}원 </Tooltip>
@@ -162,14 +162,14 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
 @import "@/assets/scss/_base.scss";
 .Card {
   @extend .center;
+  @include responsive(margin, (5px, 20px, 20px));
+  @include responsive(padding, (0, 10px 20px, 10px 20px));
   width: 150px;
   height: 200px;
   position: relative;
-  margin: 20px;
   overflow-y: auto;
   box-shadow: $shadow-1;
   border-radius: 10px;
-  padding: 10px 20px;
   &-header {
     @extend .v-stack;
     @extend .center;
