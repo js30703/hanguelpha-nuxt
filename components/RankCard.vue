@@ -33,8 +33,6 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
         {{ rank.name }}
       </NuxtLink>
 
-      <Tooltip tooltip="전일 종가"> {{ rank.closeToday }}원 </Tooltip>
-
       <Tooltip tooltip="거래대금 합 / 시가총액">
         {{ rank.ratioTradingMarketCap }}%
       </Tooltip>
@@ -162,10 +160,10 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
 @import "@/assets/scss/_base.scss";
 .Card {
   @extend .center;
-  @include responsive(margin, (5px, 20px, 20px));
-  @include responsive(padding, (0, 10px 20px, 10px 20px));
-  width: 150px;
-  height: 200px;
+  @include responsive(margin, (10px, 20px, 20px));
+  @include responsive(padding, (5px 10px, 10px 20px, 10px 20px));
+  @include responsive(width, (110px, 130px, 130px));
+  aspect-ratio: 1 / 1.5;
   position: relative;
   overflow-y: auto;
   box-shadow: $shadow-1;

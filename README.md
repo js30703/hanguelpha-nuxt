@@ -2,7 +2,7 @@
 
 ## 링크
 
-- https://hanguelpha-nuxt.vercel.app/
+- https://www.stocks-for-scalping.com/
 
 ## 페이지 설명
 

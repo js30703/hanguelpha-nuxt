@@ -3,7 +3,7 @@
 
 <template>
   <div class="login">
-    <div class="login-ctn">LOGIN</div>
+    <div class="login-ctn">준비중입니다.</div>
   </div>
 </template>
 
@@ -12,7 +12,12 @@
 @import "@/assets/scss/_base.scss";
 
 .login {
+  @extend .center;
+  background: white;
+  height: 100vh;
   &-ctn {
+    width: 95%;
+    text-align: center;
   }
 }
 </style>
