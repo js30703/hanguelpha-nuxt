@@ -13,7 +13,7 @@ const ranks = ref({
     price: 555555,
   },
 } as any);
-const std_list = ref([0, 0, 0, 0, 0]);
+const std_list = ref([0, 0, 0, 0, 0, 0, 0]);
 
 function getDeviationList(mean, std) {
   return [3, 2, 1, 0, -1, -2, -3].map((i) => cutFixed(mean + i * std));
@@ -97,15 +97,8 @@ onUnmounted(deleteIO);
     <div class="mean-board">금일장은 마감되었습니다.</div>
   </div>
   <div class="live" v-else>
-    <h1>테마모아 순위</h1>
-    <p>
-      ** 본 페이지에서 언급하는 내용은 개인적인 의견과 판단이며, 시장에
-      참여하시는 분들의 이해를 돕기 위한 목적으로 제작되었습니다.
-      <br />투자결정에 대한 최종판단은 오로지 자신의 판단으로 하여야 하며, 그로
-      인한 투자결과에 따른 책임도 본인에게 귀속됩니다.
-    </p>
-    <div class="mean-board" v-show="false">
-      <div class="row">{{ getPercent() }}%</div>
+    <div class="mean-board">
+      <h1>테마모아 라이브</h1>
       <div class="row">
         <span
           v-for="std in ['3', '2', '1', 'mean', '-1', '-2', '-3']"
@@ -114,6 +107,7 @@ onUnmounted(deleteIO);
           >{{ std }}</span
         >
       </div>
+
       <div class="row">
         <span v-for="std in std_list" :key="std">{{ std }}</span>
       </div>
@@ -151,6 +145,12 @@ onUnmounted(deleteIO);
           {{ rank?.ratioToday }}%
         </div>
       </div>
+      <p>
+        ** 본 페이지에서 언급하는 내용은 개인적인 의견과 판단이며, 시장에
+        참여하시는 분들의 이해를 돕기 위한 목적으로 제작되었습니다.
+        <br />투자결정에 대한 최종판단은 오로지 자신의 판단으로 하여야 하며,
+        그로 인한 투자결과에 따른 책임도 본인에게 귀속됩니다.
+      </p>
     </div>
   </div>
 </template>
@@ -165,21 +165,24 @@ onUnmounted(deleteIO);
     @extend .v-stack;
     flex-direction: column;
     margin: 15px 0;
+    * {
+      padding: 10px 0;
+    }
     span {
       width: 10%;
       padding: 5px;
       text-align: center;
     }
-  }
-  h1 {
-    width: 100%;
-    text-align: center;
-  }
-  p {
-    width: 100%;
-    text-align: center;
-    font-size: 12px;
-    color: #666;
+    h1 {
+      width: 100%;
+      text-align: center;
+    }
+    p {
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
   }
   &-ctn {
     @extend .v-stack;

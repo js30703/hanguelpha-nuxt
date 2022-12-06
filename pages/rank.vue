@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { useDateFormat } from "@vueuse/core";
+import { saveErrorLogSync } from "@/utils/error.js";
+
 const route = useRoute();
 let count = route.query.count ? Number(route.query.count) : 0;
 if (count == NaN || 4 < count || count < 2) {

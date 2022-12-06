@@ -13,7 +13,7 @@
     "nuxt": "3.0.0-rc.12"
   },
   "dependencies": {
-    "@axiomhq/axiom-node": "^0.9.0",
+    "@axiomhq/axiom-node": "^0.10.0",
     "@pinia/nuxt": "^0.4.3",
     "@prisma/client": "4.5.0",
     "@types/aos": "^3.0.4",

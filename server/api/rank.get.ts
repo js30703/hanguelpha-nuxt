@@ -1,9 +1,9 @@
+import { saveErrorLog } from './../../utils/error';
 import {H3Event} from 'h3'
 import prisma from '@/server/_prisma';
 import { getStandardDeviation } from '@/utils/mean';
 
-
-export default defineEventHandler(async(event:H3Event) => {
+ const main = async (event:H3Event) => {
     const rank = await prisma.dailyRank.findFirst({orderBy:{date:'desc'}})
     const { count = 0,  } = getQuery(event)
     
@@ -20,5 +20,15 @@ export default defineEventHandler(async(event:H3Event) => {
       ranks: result,
       mean: mean,
       std: std
+    }
+  }
+
+  export default defineEventHandler(async(event:H3Event) => {
+    try {
+      const result = await main(event)
+      return result
+    } catch (error) {
+      await saveErrorLog(error)
+      return error
     }
   })
