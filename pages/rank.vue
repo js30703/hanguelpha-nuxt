@@ -8,14 +8,7 @@ if (count == NaN || 4 < count || count < 2) {
   count = 0;
 }
 
-const { data } = useFetch<any>(`/api/rank?count=${count}`, {
-  onRequestError: (err) => {
-    throw err;
-  },
-  onResponseError: (err) => {
-    throw err;
-  },
-});
+const { data } = useFetch<any>(`/api/rank?count=${count}`, {});
 </script>
 
 <template>
