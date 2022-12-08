@@ -12,7 +12,6 @@ export default apiErrorHandler(async (event:H3Event) => {
     return item.detail.length == count
   })
   const [mean, std] = getStandardDeviation( result.map(item => item.detail.length) )
-  asdf
   return {
     date: rank.date,
     ranks: result,
