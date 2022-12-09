@@ -32,9 +32,12 @@ const isLarge = useMediaQuery("(min-width: 768px)");
 .Nav {
   @extend .center;
   height: 50px;
+  position: fixed;
+  z-index: 10;
+  background: $primary;
   &-ctn {
     @extend .h-stack;
-    width: 70vw;
+    width: 100vw;
     justify-content: space-between;
     a {
       @extend .center;

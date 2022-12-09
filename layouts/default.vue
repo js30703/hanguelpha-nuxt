@@ -4,7 +4,9 @@
 <template>
   <div class="layout">
     <Nav></Nav>
-    <slot />
+    <div class="layout-body">
+      <slot />
+    </div>
     <div class="scroll-top">
       <a href="#top">
         <Icon name="la:arrow-up" />
@@ -16,6 +18,13 @@
 
 <style lang="scss">
 @import "@/assets/scss/_base.scss";
+.layout {
+  position: relative;
+  min-height: 100vh;
+  .layout-body {
+    padding-top: 30px;
+  }
+}
 .scroll-top {
   position: fixed;
   bottom: 1rem;
