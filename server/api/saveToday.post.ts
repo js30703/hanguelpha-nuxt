@@ -3,7 +3,7 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import prisma from '@/server/_prisma';
 import { cutFixed , isDecreasing} from '@/utils/mean';
-
+import { apiErrorHandler } from '@/utils/error';
 const HOW_MANY_DAYS = 2 // 리스트에 들어온 일 수
 const ratioTradingMarketCapMin = 2
 
@@ -19,7 +19,7 @@ axiosSS.interceptors.response.use(
   }
 )
 
-export default defineEventHandler(async (event:H3Event) => {
+export default apiErrorHandler(async (event:H3Event) => {
   const TODAY = dayjs().format()
   const hourNow = dayjs().hour() * 100 + dayjs().minute()
   // validate request
