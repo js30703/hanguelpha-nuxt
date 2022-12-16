@@ -29,3 +29,19 @@ a {
 .openModal {
     overflow: hidden;
 }
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: white;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: $primary;
+    border-radius: 10px;
+}

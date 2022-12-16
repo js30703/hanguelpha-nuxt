@@ -159,7 +159,7 @@ onUnmounted(deleteIO);
 @import "@/assets/scss/_base.scss";
 .live {
   @extend .v-stack;
-
+  margin-top: 10px;
   background: white;
   .mean-board {
     @extend .v-stack;
