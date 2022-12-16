@@ -5,7 +5,8 @@ function onScrollHandler() {
 }
 onMounted(() => {
   document.addEventListener("scroll", onScrollHandler);
-  onBeforeUnmount(() => {});
+});
+onBeforeUnmount(() => {
   document.removeEventListener("scroll", onScrollHandler);
 });
 </script>
