@@ -1,9 +1,20 @@
 <script lang="ts" setup>
+const onTop = ref(true);
+function onScrollHandler() {
+  onTop.value = window.scrollY < 5;
+}
+onMounted(() => {
+  document.addEventListener("scroll", onScrollHandler);
+  onBeforeUnmount(() => {});
+  document.removeEventListener("scroll", onScrollHandler);
+});
 </script>
 
 <template>
   <div class="layout">
-    <Nav></Nav>
+    <div class="layout-header">
+      <Nav :class="{ onTop: onTop }"></Nav>
+    </div>
     <div class="layout-body">
       <slot />
     </div>
@@ -19,12 +30,16 @@
 <style lang="scss">
 @import "@/assets/scss/_base.scss";
 .layout {
-  position: relative;
   min-height: 100vh;
-  .layout-body {
-    padding-top: 30px;
+  &-header {
+    @extend .v-stack;
+    height: 100%;
+  }
+  &-body {
+    padding-top: 50px;
   }
 }
+
 .scroll-top {
   position: fixed;
   bottom: 1rem;

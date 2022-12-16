@@ -33,8 +33,11 @@ const isLarge = useMediaQuery("(min-width: 768px)");
   @extend .center;
   height: 50px;
   position: fixed;
+  padding-top: 0px;
   z-index: 10;
   background: $primary;
+  transition: all 0.3s ease;
+
   &-ctn {
     @extend .h-stack;
     width: 100vw;
@@ -55,5 +58,8 @@ const isLarge = useMediaQuery("(min-width: 768px)");
       }
     }
   }
+}
+.Nav.onTop {
+  padding-top: 20px;
 }
 </style>
