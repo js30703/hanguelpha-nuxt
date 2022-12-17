@@ -1,7 +1,7 @@
 export function cutFixed(num:any, fixed = 2) {
   if (typeof(num) === 'string' ) {
     num = num.replaceAll(' ','').replaceAll(',','').replaceAll('억','')
-    num = num.includes('조') ?  Number(num.split('조')[0]) * 1000 + Number(num.split('조')[1]) : Number(num)
+    num = num.includes('조') ?  Number(num.split('조')[0]) * 10000 + Number(num.split('조')[1]) : Number(num)
     if (num == Number.NaN ) return 0
   }
   return Number(num.toFixed(fixed))

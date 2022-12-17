@@ -37,14 +37,16 @@ const isLarge = useMediaQuery("(min-width: 768px)");
   z-index: 10;
   background: $primary;
   transition: all 0.3s ease;
+  width: 100vw;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 
   &-ctn {
     @extend .h-stack;
-    width: 100vw;
+    width: 95vw;
     justify-content: space-between;
     a {
       @extend .center;
-      width: 80%;
       height: 100%;
       text-decoration: none;
       color: white;
@@ -52,6 +54,9 @@ const isLarge = useMediaQuery("(min-width: 768px)");
       font-weight: 600;
       transition: all 0.3s ease;
       border-radius: 5px;
+      width: 100%;
+      padding: 5px 0;
+      margin: 5px 10px;
       &:hover {
         color: $primary;
         background: white;
