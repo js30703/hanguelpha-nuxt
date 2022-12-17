@@ -20,7 +20,7 @@
     border: 1px solid $primary;
     padding: 5px 15px;
     border-radius: 20px;
-    // box-shadow: $shadow-1;
+
     &:hover {
       background-color: $primary;
       color: white;
