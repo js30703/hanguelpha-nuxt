@@ -22,6 +22,7 @@
   @extend .center;
   background: white;
   &-ctn {
+    margin-top: 20px;
     @extend .v-stack;
     min-height: 100vh;
     width: 95%;

@@ -53,6 +53,7 @@ onBeforeUnmount(() => {
     background-color: $primary;
     border-radius: 50%;
     color: white;
+    box-shadow: $shadow-1;
   }
 }
 </style>

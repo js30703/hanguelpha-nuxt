@@ -2,9 +2,9 @@
 import { useDateFormat } from "@vueuse/core";
 import { cutFixed } from "@/utils/mean";
 const { data } = useFetch<any>(`/api/rank`, {});
+
 const count = ref(0);
 const marketCapRange = ref([0, 1000]);
-
 const volumeRatio = ref([0, 100]);
 const tradeAmount = ref([0, 100]);
 
@@ -149,9 +149,11 @@ let _ranks = computed(() => {
       border-radius: 50%;
       padding: 5px;
       background: $primary;
+      cursor: pointer;
       width: 1.6rem;
       height: 1.6rem;
-      font-size: 15px;
+      box-shadow: $shadow-1;
+      font-size: 20px;
     }
     .filter {
       @extend .v-stack;
@@ -227,3 +229,4 @@ let _ranks = computed(() => {
   }
 }
 </style>
+

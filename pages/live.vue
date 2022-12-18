@@ -161,6 +161,7 @@ onUnmounted(deleteIO);
   @extend .v-stack;
   margin-top: 10px;
   background: white;
+  height: 100vh;
   .mean-board {
     @extend .v-stack;
     flex-direction: column;

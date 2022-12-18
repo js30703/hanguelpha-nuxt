@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
+
 const description = "테마주를 한 눈에 모아서!";
 const pageTitle = "테마모아";
 const pageUrl = "https://stocks-for-scalping.com"; // Tema
 const ogImage = "/og-image.png";
 
-("테마모아");
 useHead({
   htmlAttrs: {
     lang: "kr",
