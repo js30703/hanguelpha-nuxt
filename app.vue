@@ -29,7 +29,7 @@ useHead({
     {
       hid: "og:image",
       property: "og:image",
-      content: ogImage,
+      content: pageUrl + ogImage,
     },
 
     // twitter card
