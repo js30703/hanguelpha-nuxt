@@ -31,7 +31,7 @@ onBeforeUnmount(() => {
 <style lang="scss">
 @import "@/assets/scss/_base.scss";
 .layout {
-  min-height: 100vh;
+  height: 100%;
   &-header {
     @extend .v-stack;
     height: 100%;
