@@ -32,7 +32,7 @@ const isLarge = useMediaQuery("(min-width: 768px)");
 @import "@/assets/scss/_base.scss";
 .Nav {
   @extend .center;
-  @include responsive(height, (50px, 60px, 80px));
+  @include responsive(height, (50px, 60px, 65px));
   @include responsive(border-bottom-left-radius, (15px, 15px, 20px));
   @include responsive(border-bottom-right-radius, (15px, 15px, 20px));
 

@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { useDateFormat } from "@vueuse/core";
 import { cutFixed } from "@/utils/mean";
-const { data } = useFetch<any>(`/api/rank`, {});
+const { data } = useFetch<any>(`/api/rank`, {
+  date: "2021-09-10",
+  ranks: [],
+} as any);
 
 const count = ref(0);
 const marketCapRange = ref([0, 1000]);

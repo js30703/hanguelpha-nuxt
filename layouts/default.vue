@@ -37,7 +37,7 @@ onBeforeUnmount(() => {
     height: 100%;
   }
   &-body {
-    padding-top: 50px;
+    @include responsive(padding-top, (50px, 60px, 65px));
   }
 }
 
