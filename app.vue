@@ -47,6 +47,13 @@ useHead({
     },
   ],
   title: `${description} ${pageTitle}`,
+  script: [
+    {
+      src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4073088868980370",
+      crossorigin: "anonymous",
+      async: true,
+    },
+  ],
 });
 </script>
 
