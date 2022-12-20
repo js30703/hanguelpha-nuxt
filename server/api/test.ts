@@ -21,19 +21,6 @@ axiosSS.interceptors.response.use(
 
 export default apiErrorHandler(async (event:H3Event) => {
   const TODAY = dayjs().format()
-  const hourNow = dayjs().hour() * 100 + dayjs().minute()
-  // validate request
-  const body = await readBody(event)
-  if (body.key !== process.env.DURIAN_KEY) return;
-  
-  const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1530 : 630
-  if(hourNow < timeMarketClose){ return {message:'Invalid time'} }
-  // 리스트 가져오기
-  const stocks = await fetchRisingStockList()
-
-  const STOCKS = await prisma.dailyStocks.findUnique({where:{stocks:JSON.stringify(stocks)}})
-  if (STOCKS !== null) return {message:'no new data'}
-  await prisma.dailyStocks.create({data:{date:TODAY, stocks:JSON.stringify(stocks)}})
 
   // 10일간의 데이터를 가져온다.
   const q = await prisma.dailyStocks.findMany({take: 10,orderBy:{date:'desc'}})
@@ -86,10 +73,11 @@ export default apiErrorHandler(async (event:H3Event) => {
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice
     const ratioTradingMarketCap = cutFixed(item.tradingValue * 0.01 * 0.1 / cutFixed(totalInfos.marketValue) * 100)
+
     const priceDataList = response[3].data.priceInfos.slice(-11)
     // priceDataList[0]: {"localDate":"20220713","closePrice":27350.0,"openPrice":28200.0,"highPrice":30050.0,"lowPrice":27100.0,"accumulatedTradingVolume":631538,"foreignRetentionRate":0.62}
     //item.detail[0] {"date":"2022-12-14T00:00:00.000Z","close":"9,800","ratio":15.7,"value":245587}
-
+    
     for ( let i = 1 ; i < priceDataList.length ; i++) {
       const priceData = priceDataList[i]
       const priceDataPrev = priceDataList[i-1]
@@ -102,16 +90,17 @@ export default apiErrorHandler(async (event:H3Event) => {
       
       for (let j = 0 ; j < item.detail.length ; j++) {
         if (item.detail[j].date !== date)  return 
+        console.log('signal',item.detail[j].date)
         signal = true
         item.detail[j].signal = true
         break
       }
 
-      if (!signal) item.detail.push({date,close,ratio,value, signal})
+      if (!signal)item.detail.push({date,close,ratio,value, signal})
       
       }
 
-      item.detail.sort((a:any,b:any)=>{return a.date - b.date})
+      item.detail.reverse()
     
     return {
       ...item,
