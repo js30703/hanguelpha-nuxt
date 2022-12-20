@@ -86,32 +86,6 @@ export default apiErrorHandler(async (event:H3Event) => {
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice
     const ratioTradingMarketCap = cutFixed(item.tradingValue * 0.01 * 0.1 / cutFixed(totalInfos.marketValue) * 100)
-    const priceDataList = response[3].data.priceInfos.slice(-11)
-    // priceDataList[0]: {"localDate":"20220713","closePrice":27350.0,"openPrice":28200.0,"highPrice":30050.0,"lowPrice":27100.0,"accumulatedTradingVolume":631538,"foreignRetentionRate":0.62}
-    //item.detail[0] {"date":"2022-12-14T00:00:00.000Z","close":"9,800","ratio":15.7,"value":245587}
-
-    for ( let i = 1 ; i < priceDataList.length ; i++) {
-      const priceData = priceDataList[i]
-      const priceDataPrev = priceDataList[i-1]
-      
-      let signal = false 
-      let date = new Date(priceData.localDate.slice(0,4) + '-' + priceData.localDate.slice(4,6) + '-' + priceData.localDate.slice(6,8))
-      let close = priceData.closePrice.toLocaleString()
-      let ratio = cutFixed((priceDataPrev.closePrice - priceData.closePrice) / priceData.closePrice * 100)
-      let value = cutFixed(priceData.accumulatedTradingVolume * priceData.closePrice / 1_000_000,0)
-      
-      for (let j = 0 ; j < item.detail.length ; j++) {
-        if (item.detail[j].date !== date)  return 
-        signal = true
-        item.detail[j].signal = true
-        break
-      }
-
-      if (!signal) item.detail.push({date,close,ratio,value, signal})
-      
-      }
-
-      item.detail.sort((a:any,b:any)=>{return a.date - b.date})
     
     return {
       ...item,
