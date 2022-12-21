@@ -26,7 +26,7 @@ export default apiErrorHandler(async (event:H3Event) => {
   const body = await readBody(event)
   if (body.key !== process.env.DURIAN_KEY) return;
   
-  const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1530 : 630
+  const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1330 : 630
   if(hourNow < timeMarketClose){ return {message:'Invalid time'} }
   // 리스트 가져오기
   const stocks = await fetchRisingStockList()
@@ -39,25 +39,25 @@ export default apiErrorHandler(async (event:H3Event) => {
   const q = await prisma.dailyStocks.findMany({take: 10,orderBy:{date:'desc'}})
 
   // 거래대금으로 정렬하고 중복 등장한 종목만 남김 리스트로 변환
-  const sorted_list = await mergeStockDailyHistory(q)
+  const sorted_list = await (await mergeStockDailyHistory(q)).slice(0,10)
 
   // do request
   const _req_list =[]
   sorted_list.map(item=>{
-      const url_detail_today = `https://m.stock.naver.com/api/stock/${item.code}/integration`
-      const url_detail_3year = `https://m.stock.naver.com/api/stock/${item.code}/finance/annual`
-      const url_detail_basic = `https://m.stock.naver.com/api/stock/${item.code}/basic`
-      const url_detail_price_candle = `https://api.stock.naver.com/chart/domestic/item/${item.code}?periodType=dayCandle`
-      _req_list.push(axiosSS.get(url_detail_today))
-      _req_list.push(axiosSS.get(url_detail_3year))
-      _req_list.push(axiosSS.get(url_detail_basic))
-      _req_list.push(axiosSS.get(url_detail_price_candle))
+    const url_detail_today = `https://m.stock.naver.com/api/stock/${item.code}/integration`
+    const url_detail_3year = `https://m.stock.naver.com/api/stock/${item.code}/finance/annual`
+    const url_detail_basic = `https://m.stock.naver.com/api/stock/${item.code}/basic`
+    _req_list.push(axiosSS.get(url_detail_today))
+    _req_list.push(axiosSS.get(url_detail_3year))
+    _req_list.push(axiosSS.get(url_detail_basic))
+      
   })
   const res_list = await Promise.all(_req_list)
   
   // 랭크 계산하기
-  const rank = sorted_list.map((item,idx)=>{
-    const response = [res_list[idx*4], res_list[idx*4+1], res_list[idx*4+2], res_list[idx*4+3]]
+  const rank = await Promise.all(sorted_list.map(async (item, idx)=>{
+
+    const response = [res_list[idx*3], res_list[idx*3+1], res_list[idx*3+2]]
 
     if (!response[1].data.financeInfo) return;
 
@@ -96,8 +96,9 @@ export default apiErrorHandler(async (event:H3Event) => {
       ...totalInfos,
       ...annualFinance,
     }
-  })
-  .filter((item:any)=>{ return item && Number(item.ratioTradingMarketCap) >= ratioTradingMarketCapMin})
+  }))
+ 
+  rank.filter((item:any)=>{ return item && Number(item.ratioTradingMarketCap) >= ratioTradingMarketCapMin})
   .sort((a,b)=>{return b.ratioTradingMarketCap - a.ratioTradingMarketCap})
 
   // db에 저장
