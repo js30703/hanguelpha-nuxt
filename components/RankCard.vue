@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import axios from "axios";
 import { useDateFormat, useMediaQuery } from "@vueuse/core";
 const { rank } = defineProps(["rank"]);
 function moneyScaleUp(money: number) {
@@ -10,10 +11,32 @@ function moneyScaleUp(money: number) {
   );
 }
 const isOpen = ref(false);
+const pending = ref(true);
+const prices = ref([]);
+function getPrices() {
+  axios.get(`/api/price?code=${rank.code}`).then((res) => {
+    res.data.result.forEach((item: any) => {
+      rank.detail.forEach((detail: any) => {
+        if (item.date === detail.date) {
+          item.signal = true;
+        }
+      });
+    });
+
+    prices.value = res.data.result;
+    pending.value = false;
+  });
+}
 const toggleOpen = () => {
   isOpen.value = !isOpen.value;
   const layout = document.querySelector("body").classList;
   isOpen.value ? layout.add("openModal") : layout.remove("openModal");
+  isOpen.value
+    ? getPrices()
+    : () => {
+        prices.value = [];
+        pending.value = true;
+      };
 };
 let commentsOpen = ref(false);
 const toggleComments = () => {
@@ -71,7 +94,7 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
               <th>거래대금</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="pending">
             <tr v-for="detail in rank.detail" :key="detail.date">
               <td class="bold">
                 {{ useDateFormat(detail.date, "MM월 DD일").value }}
@@ -79,6 +102,20 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
               <td>{{ detail.close }} 원</td>
               <td>{{ detail.ratio }} %</td>
               <td>{{ moneyScaleUp(detail.value) }}</td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr
+              v-for="post in prices"
+              :key="post"
+              :style="{ color: post.signal ? 'red' : 'black' }"
+            >
+              <td class="bold">
+                {{ useDateFormat(post.date, "MM월 DD일").value }}
+              </td>
+              <td>{{ post.close }} 원</td>
+              <td>{{ post.ratio }} %</td>
+              <td>{{ moneyScaleUp(post.value) }}</td>
             </tr>
           </tbody>
         </table>
@@ -168,6 +205,7 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
   overflow-y: auto;
   box-shadow: $shadow-1;
   border-radius: 10px;
+
   &-header {
     @extend .v-stack;
     @extend .center;
@@ -177,10 +215,10 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
     .name {
       font-size: 20px;
       margin: 8px 0;
-
       font-family: "Pritandard-Bold";
     }
   }
+
   &-body {
     @extend .v-stack;
     @include responsive(width, (80%, 95%, 95%));
