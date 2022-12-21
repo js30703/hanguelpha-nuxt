@@ -8,6 +8,7 @@ const HOW_MANY_DAYS = 2 // 리스트에 들어온 일 수
 const ratioTradingMarketCapMin = 2
 
 const axiosSS = axios.create({
+  headers:{'User-Agent':'Mozilla/5.0 (Linux; Android 12; SM-S906N Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/80.0.3987.119 Mobile Safari/537.36'},
   withCredentials:false,
 })
 
@@ -21,94 +22,66 @@ axiosSS.interceptors.response.use(
 
 export default apiErrorHandler(async (event:H3Event) => {
   const TODAY = dayjs().format()
-  const hourNow = dayjs().hour() * 100 + dayjs().minute()
-  // validate request
-  const body = await readBody(event)
-  if (body.key !== process.env.DURIAN_KEY) return;
-  
-  const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1330 : 630
-  if(hourNow < timeMarketClose){ return {message:'Invalid time'} }
-  // 리스트 가져오기
-  const stocks = await fetchRisingStockList()
-
-  const STOCKS = await prisma.dailyStocks.findUnique({where:{stocks:JSON.stringify(stocks)}})
-  if (STOCKS !== null) return {message:'no new data'}
-  await prisma.dailyStocks.create({data:{date:TODAY, stocks:JSON.stringify(stocks)}})
 
   // 10일간의 데이터를 가져온다.
   const q = await prisma.dailyStocks.findMany({take: 10,orderBy:{date:'desc'}})
 
   // 거래대금으로 정렬하고 중복 등장한 종목만 남김 리스트로 변환
-  const sorted_list = await mergeStockDailyHistory(q)
-
+  const sorted_list = await (await mergeStockDailyHistory(q)).slice(1,2)
+ 
   // do request
   const _req_list =[]
   sorted_list.map(item=>{
-    const url_detail_today = `https://m.stock.naver.com/api/stock/${item.code}/integration`
-    const url_detail_3year = `https://m.stock.naver.com/api/stock/${item.code}/finance/annual`
-    const url_detail_basic = `https://m.stock.naver.com/api/stock/${item.code}/basic`
-    _req_list.push(axiosSS.get(url_detail_today))
-    _req_list.push(axiosSS.get(url_detail_3year))
-    _req_list.push(axiosSS.get(url_detail_basic))
-      
+      const url_detail_price_candle = `https://api.stock.naver.com/chart/domestic/item/${item.code}?periodType=dayCandle`
+      _req_list.push(axiosSS.get(url_detail_price_candle))
   })
   const res_list = await Promise.all(_req_list)
   
   // 랭크 계산하기
-  const rank = sorted_list.map((item, idx)=>{
+  const rank = await Promise.all(sorted_list.map(async (item, idx)=>{
+    const response = res_list[idx]
+    const result = await updateList(item, idx, response)
+    return result
+  }))
 
-    const response = [res_list[idx*3], res_list[idx*3+1], res_list[idx*3+2]]
-
-    if (!response[1].data.financeInfo) return;
-
-    const totalInfos = response[0].data.totalInfos
-      .filter( item => {return ['EPS','BPS','시총',].includes(item.key)})
-      .reduce(
-        (acc,cur)=>{acc[cur.code] = cur.value; return acc},
-        {})
-
-    const annualFinance = response[1].data.financeInfo.rowList
-      .filter( item => {return ['매출액','영업이익','당좌비율'].includes(item.title)})
-      .reduce(
-        (acc,cur)=>{
-          acc[cur.title] = Object.keys(cur.columns).map(key=>{
-            const year = key.slice(0,4)
-            return year +'::'+cur.columns[key].value
-          })
-          return acc
-        },
-        {})
-      
-    const sales = annualFinance.매출액.map((item:any)=>{return cutFixed(item.split('::')[1])})
-    const margins = annualFinance.영업이익.map((item:any)=>{return cutFixed(item.split('::')[1])})
-    if(isDecreasing(sales) || isDecreasing(margins))  return;
-
-    const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
-    const closeToday = response[2].data.closePrice
-    const ratioTradingMarketCap = cutFixed(item.tradingValue * 0.01 * 0.1 / cutFixed(totalInfos.marketValue) * 100)
-    
-    return {
-      ...item,
-      summary:response[1].data.corporationSummary,
-      closeYesterDay:closeYesterDay,
-      closeToday:closeToday,
-      ratioTradingMarketCap:ratioTradingMarketCap,
-      ...totalInfos,
-      ...annualFinance,
-    }
-  })
-  .filter((item:any)=>{ return item && Number(item.ratioTradingMarketCap) >= ratioTradingMarketCapMin})
-  .sort((a,b)=>{return b.ratioTradingMarketCap - a.ratioTradingMarketCap})
-
-  // db에 저장
-  await prisma.dailyRank.create({data:{date:TODAY, rank:JSON.stringify(rank)}})
-  
   return {
     date:TODAY,
     length:rank.length,
     rank:rank
   }
 })
+
+// define async function for filter detail
+async function checkSignal (item: any, date: Date, close: string, ratio: number, value: number,) {
+  item.detail2 = []
+  for (let j = 0 ; j < item.detail.length ; j++) {
+    const signal = item.detail[j].date.toISOString() !== date.toISOString()
+    // item.detail2.push({date,close,ratio,value, signal})
+  }
+}
+
+async function updateList(item, idx, response){
+  const priceDataList = response.data.priceInfos.slice(-11).reverse()
+
+  // priceDataList[0]: {"localDate":"20220713","closePrice":27350.0,"openPrice":28200.0,"highPrice":30050.0,"lowPrice":27100.0,"accumulatedTradingVolume":631538,"foreignRetentionRate":0.62}
+  //item.detail[0] {"date":"2022-12-14T00:00:00.000Z","close":"9,800","ratio":15.7,"value":245587}
+  
+  for ( let i = 0 ; i < priceDataList.length-1 ; i++) {
+    const priceData = priceDataList[i]
+    const priceDataPrev = priceDataList[i+1]
+    
+    let date = new Date(priceData.localDate.slice(0,4) + '-' + priceData.localDate.slice(4,6) + '-' + priceData.localDate.slice(6,8))
+    let close = priceData.closePrice.toLocaleString()
+    const upDown = priceData.closePrice > priceDataPrev.closePrice ? -1 : 1
+    let ratio = cutFixed((priceDataPrev.closePrice - priceData.closePrice) * upDown / priceDataPrev.closePrice * 100)
+    let value = cutFixed(priceData.accumulatedTradingVolume * (priceData.openPrice + priceData.highPrice * 1.05+ priceData.lowPrice+ priceData.closePrice)/4 / 1_000_000,0)
+    
+    await checkSignal(item, date, close, ratio, value)
+  }
+  
+  console.log(item.name, 'loop end')
+  return item
+}
 
 
 interface StockDaily {

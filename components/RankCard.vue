@@ -44,7 +44,7 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)");
         <div class="row">
           <NuxtLink
             class="name"
-            :to="`https://m.stock.naver.com/domestic/stock/${rank.code}/total`"
+            :to="`https://m.stock.naver.com/fchart/domestic/stock/${rank.code}`"
             target="_blank"
           >
             {{ rank.name }}
