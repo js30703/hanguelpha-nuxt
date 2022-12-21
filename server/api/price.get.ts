@@ -18,8 +18,8 @@ export default apiErrorHandler(async (event:H3Event) => {
       const priceDataPrev = priceDataList[i+1]
       let date = new Date(priceData.localDate.slice(0,4) + '-' + priceData.localDate.slice(4,6) + '-' + priceData.localDate.slice(6,8))
       let close = priceData.closePrice.toLocaleString()
-      const upDown = priceData.closePrice > priceDataPrev.closePrice ? -1 : 1
-      let ratio = cutFixed((priceDataPrev.closePrice - priceData.closePrice) * upDown / priceDataPrev.closePrice * 100)
+      // const upDown = priceData.closePrice > priceDataPrev.closePrice ? -1 : 1
+      let ratio = cutFixed((priceData.closePrice - priceDataPrev.closePrice) / priceDataPrev.closePrice * 100)
       let value = cutFixed(priceData.accumulatedTradingVolume * (priceData.openPrice + priceData.highPrice * 1.05+ priceData.lowPrice+ priceData.closePrice)/4 / 1_000_000,0)
       result.push({date,close,ratio,value})
     }
