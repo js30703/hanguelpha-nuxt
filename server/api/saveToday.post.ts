@@ -26,7 +26,7 @@ export default apiErrorHandler(async (event:H3Event) => {
   const body = await readBody(event)
   if (body.key !== process.env.DURIAN_KEY) return;
   
-  const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1530 : 630
+  const timeMarketClose = (process.env.NODE_ENV == 'development' ) ? 1330 : 630
   if(hourNow < timeMarketClose){ return {message:'Invalid time'} }
   // 리스트 가져오기
   const stocks = await fetchRisingStockList()
@@ -39,25 +39,25 @@ export default apiErrorHandler(async (event:H3Event) => {
   const q = await prisma.dailyStocks.findMany({take: 10,orderBy:{date:'desc'}})
 
   // 거래대금으로 정렬하고 중복 등장한 종목만 남김 리스트로 변환
-  const sorted_list = await mergeStockDailyHistory(q)
+  const sorted_list = await (await mergeStockDailyHistory(q)).slice(0,10)
 
   // do request
   const _req_list =[]
   sorted_list.map(item=>{
-      const url_detail_today = `https://m.stock.naver.com/api/stock/${item.code}/integration`
-      const url_detail_3year = `https://m.stock.naver.com/api/stock/${item.code}/finance/annual`
-      const url_detail_basic = `https://m.stock.naver.com/api/stock/${item.code}/basic`
-      const url_detail_price_candle = `https://api.stock.naver.com/chart/domestic/item/${item.code}?periodType=dayCandle`
-      _req_list.push(axiosSS.get(url_detail_today))
-      _req_list.push(axiosSS.get(url_detail_3year))
-      _req_list.push(axiosSS.get(url_detail_basic))
-      _req_list.push(axiosSS.get(url_detail_price_candle))
+    const url_detail_today = `https://m.stock.naver.com/api/stock/${item.code}/integration`
+    const url_detail_3year = `https://m.stock.naver.com/api/stock/${item.code}/finance/annual`
+    const url_detail_basic = `https://m.stock.naver.com/api/stock/${item.code}/basic`
+    _req_list.push(axiosSS.get(url_detail_today))
+    _req_list.push(axiosSS.get(url_detail_3year))
+    _req_list.push(axiosSS.get(url_detail_basic))
+      
   })
   const res_list = await Promise.all(_req_list)
   
   // 랭크 계산하기
-  const rank = sorted_list.map((item,idx)=>{
-    const response = [res_list[idx*4], res_list[idx*4+1], res_list[idx*4+2], res_list[idx*4+3]]
+  const rank = await Promise.all(sorted_list.map(async (item, idx)=>{
+
+    const response = [res_list[idx*3], res_list[idx*3+1], res_list[idx*3+2]]
 
     if (!response[1].data.financeInfo) return;
 
@@ -86,32 +86,6 @@ export default apiErrorHandler(async (event:H3Event) => {
     const closeYesterDay= response[0].data.dealTrendInfos[0].closePrice
     const closeToday = response[2].data.closePrice
     const ratioTradingMarketCap = cutFixed(item.tradingValue * 0.01 * 0.1 / cutFixed(totalInfos.marketValue) * 100)
-    const priceDataList = response[3].data.priceInfos.slice(-11)
-    // priceDataList[0]: {"localDate":"20220713","closePrice":27350.0,"openPrice":28200.0,"highPrice":30050.0,"lowPrice":27100.0,"accumulatedTradingVolume":631538,"foreignRetentionRate":0.62}
-    //item.detail[0] {"date":"2022-12-14T00:00:00.000Z","close":"9,800","ratio":15.7,"value":245587}
-
-    for ( let i = 1 ; i < priceDataList.length ; i++) {
-      const priceData = priceDataList[i]
-      const priceDataPrev = priceDataList[i-1]
-      
-      let signal = false 
-      let date = new Date(priceData.localDate.slice(0,4) + '-' + priceData.localDate.slice(4,6) + '-' + priceData.localDate.slice(6,8))
-      let close = priceData.closePrice.toLocaleString()
-      let ratio = cutFixed((priceDataPrev.closePrice - priceData.closePrice) / priceData.closePrice * 100)
-      let value = cutFixed(priceData.accumulatedTradingVolume * priceData.closePrice / 1_000_000,0)
-      
-      for (let j = 0 ; j < item.detail.length ; j++) {
-        if (item.detail[j].date !== date)  return 
-        signal = true
-        item.detail[j].signal = true
-        break
-      }
-
-      if (!signal) item.detail.push({date,close,ratio,value, signal})
-      
-      }
-
-      item.detail.sort((a:any,b:any)=>{return a.date - b.date})
     
     return {
       ...item,
@@ -122,8 +96,9 @@ export default apiErrorHandler(async (event:H3Event) => {
       ...totalInfos,
       ...annualFinance,
     }
-  })
-  .filter((item:any)=>{ return item && Number(item.ratioTradingMarketCap) >= ratioTradingMarketCapMin})
+  }))
+ 
+  rank.filter((item:any)=>{ return item && Number(item.ratioTradingMarketCap) >= ratioTradingMarketCapMin})
   .sort((a,b)=>{return b.ratioTradingMarketCap - a.ratioTradingMarketCap})
 
   // db에 저장
